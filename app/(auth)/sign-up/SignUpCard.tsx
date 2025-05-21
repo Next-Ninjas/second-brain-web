@@ -49,7 +49,7 @@ export const SignUpCard = () => {
         setSignUpError(new Error("Unable to sign up currently"));
         return;
       }
-      router.replace("/feeds");
+      router.replace("/home");
     },
   });
   return (

@@ -44,7 +44,7 @@ export const SignInCard = () => {
         return;
       }
 
-      router.replace(`/feeds`);
+      router.replace(`/home`);
     },
   });
 

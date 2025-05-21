@@ -10,8 +10,7 @@ const inter = Inter({
 });
 export const metadata: Metadata = {
   title: "Second Brain",
-  description:
-    "Second Brain is a full-stack AI-powered personal knowledge assistant.",
+  description: "Second Brain is a AI-powered personal knowledge assistant.",
 };
 
 const RootLayout = (props: PropsWithChildren) => {
