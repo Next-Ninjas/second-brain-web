@@ -48,7 +48,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-const COLORS_LIGHT = ["#blue"];
+const COLORS_LIGHT = ["#376AD1", "#376AD1", "#376AD1"];
 const COLORS_DARK = ["#fbfcca", "#d7f3fe", "#ffd0a7"];
 
 export default function AnimatedBackground() {
