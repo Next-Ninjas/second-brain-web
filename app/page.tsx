@@ -29,7 +29,7 @@ const RootPage = () => {
             <Link href="/sign-up">Sign Up</Link>
           </Button>
           <Button variant="secondary" asChild className="w-full sm:w-auto">
-            <Link href="/log-in">Log In</Link>
+            <Link href="/sign-in">Log In</Link>
           </Button>
         </div>
       </div>
