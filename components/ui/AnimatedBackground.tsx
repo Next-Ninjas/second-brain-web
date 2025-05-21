@@ -1,55 +1,7 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-
-// const generateDots = (count: number) =>
-//   Array.from({ length: count }, () => ({
-//     top: Math.random() * 100,
-//     left: Math.random() * 100,
-//     size: Math.random() * 2 + 1,
-//     duration: Math.random() * 10 + 5,
-//     delay: Math.random() * 10,
-//   }));
-
-// const AnimatedBackground = () => {
-//   const [dots, setDots] = useState<any[]>([]); // Empty on server
-
-//   useEffect(() => {
-//     setDots(generateDots(80)); // Client-only random logic
-
-//     const interval = setInterval(() => {
-//       setDots(generateDots(80));
-//     }, 20000);
-
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   return (
-//     <div className="absolute inset-0 -z-10 overflow-hidden text-black dark:text-white">
-//       {dots.map((dot, index) => (
-//         <div
-//           key={index}
-//           className="absolute rounded-full animate-float bg-current"
-//           style={{
-//             top: `${dot.top}%`,
-//             left: `${dot.left}%`,
-//             width: `${dot.size}px`,
-//             height: `${dot.size}px`,
-//             animationDuration: `${dot.duration}s`,
-//             animationDelay: `${dot.delay}s`,
-//           }}
-//         />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default AnimatedBackground;
 "use client";
 import { useEffect, useRef } from "react";
 
-const COLORS_LIGHT = ["#376AD1", "#376AD1", "#376AD1"];
-const COLORS_DARK = ["#376AD1", "#376AD1", "#376AD1"];
+const COLORS = ["#376AD1", "#376AD1", "#376AD1"];
 
 export default function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -62,9 +14,6 @@ export default function AnimatedBackground() {
 
     let particles: any[] = [];
     const particleCount = 100;
-    const colorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? COLORS_DARK
-      : COLORS_LIGHT;
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -74,12 +23,11 @@ export default function AnimatedBackground() {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // Initialize particles
     particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      size: Math.random() * 6 + 2,
-      color: colorScheme[Math.floor(Math.random() * colorScheme.length)],
+      size: Math.random() * 4 + 1, // Smaller particles
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
       dx: (Math.random() - 0.5) * 0.8,
       dy: (Math.random() - 0.5) * 0.6,
     }));
@@ -88,11 +36,7 @@ export default function AnimatedBackground() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach((p) => {
         ctx.beginPath();
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-        grad.addColorStop(0, p.color);
-        grad.addColorStop(1, "transparent");
-
-        ctx.fillStyle = grad;
+        ctx.fillStyle = p.color;
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
@@ -102,8 +46,6 @@ export default function AnimatedBackground() {
       particles.forEach((p) => {
         p.x += p.dx;
         p.y += p.dy;
-
-        // bounce off edges
         if (p.x <= 0 || p.x >= canvas.width) p.dx *= -1;
         if (p.y <= 0 || p.y >= canvas.height) p.dy *= -1;
       });
@@ -126,7 +68,9 @@ export default function AnimatedBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 z-0 pointer-events-none"
-      style={{ backgroundColor: "transparent" }}
+      style={{
+        backgroundColor: "transparent", // Fully transparent
+      }}
     />
   );
 }
