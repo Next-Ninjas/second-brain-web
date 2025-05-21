@@ -17,10 +17,10 @@ const RootPage = () => {
             className="object-contain"
           />
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-balance max-w-[90%] sm:max-w-[80%] md:max-w-prose">
-            InSight360
+            Second Brain
           </h1>
           <p className="text-base sm:text-lg max-w-[90%] sm:max-w-[80%] md:max-w-prose text-muted-foreground">
-            Your Gateway to the World&apos;s News, Trends, and Insights
+          Second Brain is a full-stack AI-powered personal knowledge assistant.
           </p>
         </div>
 
