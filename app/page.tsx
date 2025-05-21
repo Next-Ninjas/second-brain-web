@@ -1,16 +1,19 @@
 "use client";
 
+import AnimatedBackground from "@/components/AnimatedBackground";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
 const RootPage = () => {
   return (
+    <div className="relative min-h-svh container mx-auto px-4">
+    <AnimatedBackground />
     <div className="min-h-svh container mx-auto px-4">
       <div className="min-h-svh flex flex-col items-center justify-center gap-6 text-center">
         <div className="flex flex-col items-center gap-2 px-4 sm:px-6 md:px-8">
           <Image
-            src="/robo-wave-removebg-preview.png"
+            src="brain.png"
             alt="Robot waving"
             width={384} // for example, 48 * 8 (w-48 in tailwind is 12rem = 192px, so adjust as needed)
             height={192} // adjust height accordingly to keep aspect ratio
@@ -33,6 +36,7 @@ const RootPage = () => {
           </Button>
         </div>
       </div>
+    </div>
     </div>
   );
 };
