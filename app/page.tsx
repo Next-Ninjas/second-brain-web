@@ -3,7 +3,7 @@ import React from 'react'
 const Rootpage = () => {
   return (
     <div>
-      page
+      hello world
     </div>
   )
 }
