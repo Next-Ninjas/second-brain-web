@@ -48,8 +48,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-const COLORS_LIGHT = ["#376AD1", "#6096f7", "#89c2ff"];
-const COLORS_DARK = ["#fbfcca", "#d7f3fe", "#ffd0a7"];
+const COLORS_LIGHT = ["#376AD1", "#376AD1", "#376AD1"];
+const COLORS_DARK = ["#376AD1", "#376AD1", "#376AD1"];
 
 export default function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
