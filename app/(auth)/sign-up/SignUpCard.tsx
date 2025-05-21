@@ -20,7 +20,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
 import { Caption } from "@/components/ui/Caption";
-import { emailSchema, nameSchema, passwordSchema } from "@/lib/extras/schemas/email";
+import {
+  emailSchema,
+  nameSchema,
+  passwordSchema,
+} from "@/lib/extras/schemas/email";
 
 import { RoundSpinner } from "@/components/ui/spinner";
 
