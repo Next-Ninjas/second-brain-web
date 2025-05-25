@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { PropsWithChildren } from "react";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { TanstackQueryClientProvider } from "@/components/providers/tanstack-query-client-provider";
+
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,8 +24,9 @@ const RootLayout = (props: PropsWithChildren) => {
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
-          {props.children}
+        ><TanstackQueryClientProvider>
+            {props.children}
+          </TanstackQueryClientProvider>
         </ThemeProvider>
       </body>
     </html>
