@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
 
-const COLORS = ["#376AD1", "#376AD1", "#376AD1"];
-
 export default function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -20,17 +18,28 @@ export default function AnimatedBackground() {
       canvas.height = window.innerHeight;
     };
 
+    const getColorScheme = () => {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "#FFFFFF" // white for dark mode
+        : "#000000"; // black for light mode
+    };
+
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    particles = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 4 + 1, // Smaller particles
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      dx: (Math.random() - 0.5) * 0.8,
-      dy: (Math.random() - 0.5) * 0.6,
-    }));
+    const generateParticles = () => {
+      const color = getColorScheme();
+      return Array.from({ length: particleCount }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 4 + 1,
+        color,
+        dx: (Math.random() - 0.5) * 0.8,
+        dy: (Math.random() - 0.5) * 0.6,
+      }));
+    };
+
+    particles = generateParticles();
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -59,8 +68,15 @@ export default function AnimatedBackground() {
 
     animate();
 
+    const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleColorSchemeChange = () => {
+      particles = generateParticles();
+    };
+    colorSchemeQuery.addEventListener("change", handleColorSchemeChange);
+
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+      colorSchemeQuery.removeEventListener("change", handleColorSchemeChange);
     };
   }, []);
 
@@ -68,9 +84,7 @@ export default function AnimatedBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 z-0 pointer-events-none"
-      style={{
-        backgroundColor: "transparent", // Fully transparent
-      }}
+      style={{ backgroundColor: "transparent" }}
     />
   );
 }

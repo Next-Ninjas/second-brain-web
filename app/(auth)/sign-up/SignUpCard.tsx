@@ -56,7 +56,7 @@ export const SignUpCard = () => {
     <Card className="w-md">
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
-        <CardDescription>Enjoy Platinum at its best!</CardDescription>
+        <CardDescription>Enjoy Second Brain at its best!</CardDescription>
       </CardHeader>
       <Separator />
       <CardContent>
@@ -182,7 +182,7 @@ export const SignUpCard = () => {
           >
             {(field) => {
               return (
-                <div className="flex items-center space-x-2">
+                <div className="flex items-start space-x-2">
                   <Checkbox
                     id={field.name}
                     name={field.name}
@@ -197,18 +197,34 @@ export const SignUpCard = () => {
                     }}
                   />
                   <label
-                    htmlFor="terms"
+                    htmlFor={field.name}
                     className={cn(
-                      "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+                      "text-sm font-medium leading-snug",
                       field.state.meta.errors.length > 0 && "text-destructive"
                     )}
                   >
-                    Accept terms and conditions
+                    I agree to the{" "}
+                    <Link
+                      href="/sign-up/terms"
+                      target="_blank"
+                      className="underline text-blue-600 hover:text-blue-800"
+                    >
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      href="/sign-up/privacy"
+                      target="_blank"
+                      className="underline text-blue-600 hover:text-blue-800"
+                    >
+                      Privacy Policy
+                    </Link>
                   </label>
                 </div>
               );
             }}
           </Field>
+
           <Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
           >

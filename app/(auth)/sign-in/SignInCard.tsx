@@ -52,7 +52,7 @@ export const SignInCard = () => {
     <Card className="w-md">
       <CardHeader>
         <CardTitle>Welcome back!</CardTitle>
-        <CardDescription>Enjoy HackerNews at its best</CardDescription>
+        <CardDescription>Enjoy Second Brain at its best</CardDescription>
       </CardHeader>
 
       <Separator />

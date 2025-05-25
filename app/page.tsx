@@ -20,11 +20,10 @@ const RootPage = () => {
               className="object-contain"
             />
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-balance max-w-[90%] sm:max-w-[80%] md:max-w-prose">
-              Second Brain
+              NeuroNote
             </h1>
             <p className="text-base sm:text-lg max-w-[90%] sm:max-w-[80%] md:max-w-prose text-muted-foreground">
-              Second Brain is a full-stack AI-powered personal knowledge
-              assistant.
+              NeuroNote is a AI-powered personal knowledge assistant.
             </p>
           </div>
 
