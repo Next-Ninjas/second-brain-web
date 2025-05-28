@@ -11,8 +11,8 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:py-4">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <BrainCircuit />
-          <span className="font-semibold text-lg">Neuro Note</span>
+          <BrainCircuit color="green" size={30} />
+          <span className="font-semibold text-lg">NeuroNote</span>
         </div>
 
         {/* Right-side icons: GitHub and ModeToggle */}
