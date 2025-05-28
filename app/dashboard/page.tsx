@@ -5,11 +5,9 @@ import Navbar from "./NavBar";
 import CreateMemory from "../chats/components/create-memory/page";
 import Link from "next/link";
 
-
 export default function HeroSection() {
   return (
     <div className="">
-
       <Navbar />
       <section className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black text-black dark:text-white px-4 text-center">
         <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight">
@@ -23,7 +21,7 @@ export default function HeroSection() {
         <div className="mt-10 flex flex-col sm:flex-row gap-4">
           <CreateMemory />
           <Button className="bg-gray-200 hover:bg-gray-300 text-black dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white font-semibold px-6 py-3 rounded-xl transition">
-            <Link href={'/chats'}>Chat Memory</Link>
+            <Link href={"/chats"}>Chat Memory</Link>
           </Button>
         </div>
       </section>
