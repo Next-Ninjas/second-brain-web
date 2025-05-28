@@ -26,6 +26,7 @@ const RootLayout = (props: PropsWithChildren) => {
           disableTransitionOnChange
         ><TanstackQueryClientProvider>
             {props.children}
+        
           </TanstackQueryClientProvider>
         </ThemeProvider>
       </body>

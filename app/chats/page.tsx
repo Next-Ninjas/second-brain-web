@@ -12,7 +12,7 @@ const Page = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Sticky Header */}
-      <div className="flex-row sticky top-0 z-50 w-full border-b bg-white dark:bg-[#121212] border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
+      <div className="flex-row sticky top-0 z-50 w-full border-b bg-white dark:bg-[#121212] border-gray-200 px-6 py-1 dark:border-gray-700  flex items-center justify-between">
         <h1 className="text-xl font-bold">Sticky Header</h1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
