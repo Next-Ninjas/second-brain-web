@@ -1,5 +1,7 @@
 // "use client";
 
+import Link from "next/link";
+
 // import { useState } from "react";
 // import { useMutation } from "@tanstack/react-query";
 // import { serverUrl } from "@/lib/environment";
@@ -120,7 +122,8 @@ export default function HeroSection() {
       </p>
       <div className="mt-10 flex flex-col sm:flex-row gap-4">
         <button className="bg-[#155DFC] hover:bg-[#0f4bd4] text-white dark:text-white font-semibold px-6 py-3 rounded-xl transition">
-          Add Memory
+                  
+                  <Link href="/chats">Add Memory</Link>
         </button>
         <button className="bg-gray-200 hover:bg-gray-300 text-black dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white font-semibold px-6 py-3 rounded-xl transition">
           Chat Memory

@@ -110,9 +110,9 @@ export default function TermsOfServicePage() {
             7. Disclaimer and Limitation of Liability
           </h2>
           <p>
-            MemoryApp is provided "as is" without warranties of any kind. We are
-            not liable for any indirect or consequential damages arising from
-            your use of the Services.
+            MemoryApp is provided &quot;as is&quot; without warranties of any
+            kind. We are not liable for any indirect or consequential damages
+            arising from your use of the Services.
           </p>
 
           <h2 className="text-2xl sm:text-3xl font-semibold">

@@ -20,6 +20,12 @@ import { tanstackQueryClient } from "@/lib/integrations/tanstack-query";
 import { toast } from "sonner";
 import { serverUrl } from "@/lib/environment";
 
+// Define a safe type for metadata
+type MemoryMetadata = {
+  location?: string;
+  [key: string]: string | number | boolean | undefined;
+};
+
 const CreateMemory = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,7 +40,7 @@ const CreateMemory = () => {
       title: string;
       content: string;
       tags?: string[];
-      metadata?: any;
+      metadata?: MemoryMetadata;
       isFavorite?: boolean;
     }) => {
       const res = await fetch(`${serverUrl}/memories`, {
@@ -65,15 +71,21 @@ const CreateMemory = () => {
       isFavorite: false,
     },
     onSubmit: ({ value }) => {
+      let parsedMetadata: MemoryMetadata | undefined = undefined;
+      if (value.metadata) {
+        try {
+          parsedMetadata = JSON.parse(value.metadata);
+        } catch  {
+          toast.error("Metadata must be valid JSON.");
+          return;
+        }
+      }
+
       createMemoryMutation.mutate({
         title: value.title,
         content: value.content,
-        tags: value.tags
-          ? value.tags.split(",").map((tag) => tag.trim())
-          : [],
-        metadata: value.metadata
-          ? JSON.parse(value.metadata)
-          : undefined,
+        tags: value.tags ? value.tags.split(",").map((tag) => tag.trim()) : [],
+        metadata: parsedMetadata,
         isFavorite: value.isFavorite,
       });
     },
@@ -100,7 +112,7 @@ const CreateMemory = () => {
 
       <DialogContent className="max-w-xl w-full">
         <DialogHeader>
-          <DialogTitle>What's your memory?</DialogTitle>
+          <DialogTitle>What&apos;s your memory?</DialogTitle>
           <DialogDescription>Share a personal memory.</DialogDescription>
         </DialogHeader>
         <form
@@ -168,7 +180,9 @@ const CreateMemory = () => {
             )}
           </Field>
 
-          <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+          <Subscribe
+            selector={(state) => [state.canSubmit, state.isSubmitting]}
+          >
             {([canSubmit, isSubmitting]) => (
               <Button
                 type="submit"
@@ -176,9 +190,7 @@ const CreateMemory = () => {
                   !canSubmit || isSubmitting || createMemoryMutation.isPending
                 }
               >
-                {createMemoryMutation.isPending && (
-                  <Spinner className="mr-2" />
-                )}
+                {createMemoryMutation.isPending && <Spinner className="mr-2" />}
                 Create Memory
               </Button>
             )}
