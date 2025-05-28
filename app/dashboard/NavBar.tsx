@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Github } from "lucide-react";
 import { ModeToggle } from "@/components/ui/ModeToggle";
-import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
@@ -11,7 +11,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:py-4">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="logo" className="h-6 w-auto" />
+          <Image src="/logo.png" alt="logo" className="h-6 w-auto" />
           <span className="font-semibold text-lg">Neuro Note</span>
         </div>
 
