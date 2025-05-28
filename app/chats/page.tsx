@@ -64,7 +64,7 @@ const Page = () => {
               <DropdownMenuItem
                 onClick={async () => {
                   const response = await betterAuthClient.signOut();
-                  if (response.data) router.replace("/log-in");
+                  if (response.data) router.replace("/");
                 }}
               >
                 <LogOutIcon className="mr-2 h-4 w-4" />
