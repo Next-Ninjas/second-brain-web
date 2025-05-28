@@ -1,99 +1,100 @@
 "use client";
-import { useEffect, useRef } from "react";
 
-type Particle = {
-  x: number;
-  y: number;
-  size: number;
-  color: string;
-  dx: number;
-  dy: number;
-};
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
 
 export default function AnimatedBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    let scene: THREE.Scene;
+    let camera: THREE.PerspectiveCamera;
+    let renderer: THREE.WebGLRenderer;
+    let stars: THREE.Points;
+    let animationId: number;
 
-    let particles: Particle[] = [];
-    const particleCount = 100;
+    const starCount = 10000;
 
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
+    const init = () => {
+      // Scene
+      scene = new THREE.Scene(); // Camera
 
-    const getColorScheme = () => {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "#FFFFFF" // white for dark mode
-        : "#000000"; // black for light mode
-    };
+      camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      camera.position.z = 800; // Renderer
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+      renderer = new THREE.WebGLRenderer({ alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      if (containerRef.current) {
+        containerRef.current.appendChild(renderer.domElement);
+      } // Star Geometry
 
-    const generateParticles = () => {
-      const color = getColorScheme();
-      return Array.from({ length: particleCount }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 4 + 1,
-        color,
-        dx: (Math.random() - 0.5) * 0.8,
-        dy: (Math.random() - 0.5) * 0.6,
-      }));
-    };
+      const starGeometry = new THREE.BufferGeometry();
+      const starPositions = new Float32Array(starCount * 3);
+      for (let i = 0; i < starCount * 3; i++) {
+        starPositions[i] = (Math.random() - 0.5) * 2000;
+      }
+      starGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(starPositions, 3)
+      ); // Star Material
 
-    particles = generateParticles();
+      const starMaterial = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.5,
+        transparent: true,
+      }); // Points
 
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        ctx.beginPath();
-        ctx.fillStyle = p.color;
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    };
-
-    const update = () => {
-      particles.forEach((p) => {
-        p.x += p.dx;
-        p.y += p.dy;
-        if (p.x <= 0 || p.x >= canvas.width) p.dx *= -1;
-        if (p.y <= 0 || p.y >= canvas.height) p.dy *= -1;
-      });
+      stars = new THREE.Points(starGeometry, starMaterial);
+      scene.add(stars);
     };
 
     const animate = () => {
-      draw();
-      update();
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate); // Rotation
+
+      stars.rotation.y += 0.0005;
+      stars.rotation.x += 0.0002; // Move stars downward
+
+      const positions = stars.geometry.attributes.position
+        .array as Float32Array;
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i + 1] -= 0.05;
+        if (positions[i + 1] < -1000) {
+          positions[i + 1] = 1000;
+        }
+      }
+      stars.geometry.attributes.position.needsUpdate = true;
+
+      renderer.render(scene, camera);
     };
 
+    const handleResize = () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    }; // Initialize and animate
+
+    init();
     animate();
 
-    const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleColorSchemeChange = () => {
-      particles = generateParticles();
-    };
-    colorSchemeQuery.addEventListener("change", handleColorSchemeChange);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
-      colorSchemeQuery.removeEventListener("change", handleColorSchemeChange);
+      cancelAnimationFrame(animationId);
+      window.removeEventListener("resize", handleResize);
+      if (containerRef.current && renderer) {
+        containerRef.current.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none"
-      style={{ backgroundColor: "transparent" }}
-    />
+    <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none" />
   );
 }
