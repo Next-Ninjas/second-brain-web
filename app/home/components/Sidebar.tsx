@@ -4,7 +4,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchSidebarItems } from "@/lib/queries";
 import SidebarItem from "./SidebarItem";
-import { Loader } from "lucide-react";
 import { RoundSpinner } from "@/components/ui/spinner";
 
 export default function Sidebar() {

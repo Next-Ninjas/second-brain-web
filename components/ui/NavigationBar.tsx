@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
-import { House, LogOutIcon, SearchIcon, UserIcon } from "lucide-react";
+import { House, LogOutIcon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+
 
 const NavigationBar = () => {
   const router = useRouter();

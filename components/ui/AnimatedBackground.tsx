@@ -1,6 +1,15 @@
 "use client";
 import { useEffect, useRef } from "react";
 
+type Particle = {
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  dx: number;
+  dy: number;
+};
+
 export default function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -10,7 +19,7 @@ export default function AnimatedBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let particles: any[] = [];
+    let particles: Particle[] = [];
     const particleCount = 100;
 
     const resizeCanvas = () => {
