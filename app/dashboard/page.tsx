@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import Navbar from "./NavBar";
-import Memory from "../chats/page";
+import CreateMemory from "../chats/components/create-memory/page";
+
 
 export default function HeroSection() {
   return (
@@ -18,7 +19,7 @@ export default function HeroSection() {
           conversations using AI-enhanced memory and chat.
         </p>
         <div className="mt-10 flex flex-col sm:flex-row gap-4">
-          <Memory />
+          <CreateMemory />
           <Button className="bg-gray-200 hover:bg-gray-300 text-black dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white font-semibold px-6 py-3 rounded-xl transition">
             Chat Memory
           </Button>
