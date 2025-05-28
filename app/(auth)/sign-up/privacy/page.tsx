@@ -114,7 +114,7 @@ export default function PrivacyPolicyPage() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-semibold">9. <strong>Children’s Privacy</strong></h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold">9. <strong>Children&apos;s Privacy</strong></h2>
             <p>
               The Services are not intended for users under the age of 18. We do not knowingly collect data from minors.
               If you believe a child has submitted personal data, contact us and we will delete it.
