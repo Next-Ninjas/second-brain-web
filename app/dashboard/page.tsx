@@ -64,7 +64,6 @@ import Link from "next/link";
 //   );
 // }
 
-
 // export default function HeroSection() {
 //   return (
 //     <section className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 text-center">
@@ -86,8 +85,6 @@ import Link from "next/link";
 //     </section>
 //   );
 // }
-
-
 
 // export default function HeroSection() {
 //   return (
@@ -118,12 +115,12 @@ export default function HeroSection() {
         <span className="text-[#155DFC]">Capture your thoughts</span>
       </h1>
       <p className="mt-6 text-lg sm:text-xl max-w-2xl bg-gradient-to-r from-blue-500 via-cyan-400 to-green-500 text-transparent bg-clip-text dark:from-blue-400 dark:via-cyan-400 dark:to-green-500">
-        MemoryApp helps you store and retrieve your ideas, inspirations, and conversations using AI-enhanced memory and chat.
+        MemoryApp helps you store and retrieve your ideas, inspirations, and
+        conversations using AI-enhanced memory and chat.
       </p>
       <div className="mt-10 flex flex-col sm:flex-row gap-4">
         <button className="bg-[#155DFC] hover:bg-[#0f4bd4] text-white dark:text-white font-semibold px-6 py-3 rounded-xl transition">
-                  
-                  <Link href="/chats">Add Memory</Link>
+          <Link href="/chats">Add Memory</Link>
         </button>
         <button className="bg-gray-200 hover:bg-gray-300 text-black dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white font-semibold px-6 py-3 rounded-xl transition">
           Chat Memory
