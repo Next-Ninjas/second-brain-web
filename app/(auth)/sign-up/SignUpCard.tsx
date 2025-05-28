@@ -49,7 +49,7 @@ export const SignUpCard = () => {
         setSignUpError(new Error("Unable to sign up currently"));
         return;
       }
-      router.replace("/home");
+      router.replace("/dashboard");
     },
   });
   return (
@@ -249,7 +249,7 @@ export const SignUpCard = () => {
       <CardContent className="py-2">
         Already have an account?{" "}
         <Link
-          href="/log-in"
+          href="/sign-in"
           className="hover:underline hover:underline-offset-4 text-blue-500"
         >
           <span className=" text-blue-500 p-2 ">Login</span>
