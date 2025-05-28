@@ -97,17 +97,13 @@ export default function PrivacyPolicyPage() {
             </ul>
           </div>
 
-          <div className="space-y-4">
-            <h2 className="text-2xl sm:text-3xl font-semibold">7. <strong>Security Measures</strong></h2>
-            <p>
-              We implement appropriate technical and organizational safeguards including:
-            </p>
-            <ul>
-              <li>End-to-end encryption</li>
-              <li>Role-based access control (RBAC)</li>
-              <li>Secure infrastructure and monitored access</li>
-            </ul>
-          </div>
+        <div className="space-y-4">
+          <h2>10. Changes to This Policy</h2>
+          <p>
+            We may update this Privacy Policy. We&apos;ll notify you of major updates.
+            Continued use after changes implies consent to the new policy.
+          </p>
+        </div>
 
           <div className="space-y-4">
             <h2 className="text-2xl sm:text-3xl font-semibold">8. <strong>Cookies and Similar Technologies</strong></h2>
