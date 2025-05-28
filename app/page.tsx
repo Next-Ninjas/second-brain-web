@@ -27,8 +27,8 @@ const RootPage = () => {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4">
-            <Button asChild className="w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center dark:text-grey-500 gap-4 w-full sm:w-auto px-4">
+            <Button asChild className="w-full sm:w-auto dark:text-gray-900 hover:bg-green-300">
               <Link href="/sign-up">Sign Up</Link>
             </Button>
             <Button variant="secondary" asChild className="w-full sm:w-auto">
