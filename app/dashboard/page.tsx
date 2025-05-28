@@ -112,7 +112,7 @@ export default function HeroSection() {
     <section className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black text-black dark:text-white px-4 text-center">
       <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight">
         Build a smarter memory <br />
-        <span className="text-[#155DFC]">Capture your thoughts</span>
+        <span className="text-[#3ECF8E]">Capture your thoughts</span>
       </h1>
       <p className="mt-6 text-lg sm:text-xl max-w-2xl bg-gradient-to-r from-blue-500 via-cyan-400 to-green-500 text-transparent bg-clip-text dark:from-blue-400 dark:via-cyan-400 dark:to-green-500">
         MemoryApp helps you store and retrieve your ideas, inspirations, and
