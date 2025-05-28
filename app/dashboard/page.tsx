@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import Navbar from "./NavBar";
 import CreateMemory from "../chats/components/create-memory/page";
 import Link from "next/link";
+import AnimatedBackground from "@/components/ui/AnimatedBackground";
 
 
 export default function HeroSection() {
   return (
     <div className="">
+      <AnimatedBackground />
       <Navbar />
       <section className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-black text-black dark:text-white px-4 text-center">
         <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight">
