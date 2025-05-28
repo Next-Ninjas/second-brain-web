@@ -119,7 +119,7 @@ export default function PrivacyPolicyPage() {
         <div className="space-y-4">
           <h2>10. Changes to This Policy</h2>
           <p>
-            We may update this Privacy Policy. We'll notify you of major updates.
+            We may update this Privacy Policy. We&apos;ll notify you of major updates.
             Continued use after changes implies consent to the new policy.
           </p>
         </div>
