@@ -1,63 +1,192 @@
 "use client";
 
-import { useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { tanstackQueryClient } from "@/lib/integrations/tanstack-query";
+import { toast } from "sonner";
 import { serverUrl } from "@/lib/environment";
 
-export default function DashboardPage() {
-  const [url, setUrl] = useState("");
+const CreateMemory = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const mutation = useMutation({
-    mutationFn: async (inputUrl: string) => {
-      const res = await fetch(`${serverUrl}/url`, {
+  const createMemoryMutation = useMutation({
+    mutationFn: async ({
+      title,
+      content,
+      tags,
+      metadata,
+      isFavorite,
+    }: {
+      title: string;
+      content: string;
+      tags?: string[];
+      metadata?: any;
+      isFavorite?: boolean;
+    }) => {
+      const res = await fetch(`${serverUrl}/memories`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ url: inputUrl }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content, tags, metadata, isFavorite }),
       });
-
-      if (!res.ok) throw new Error("Failed to submit URL");
+      if (!res.ok) throw new Error("Failed to create memory");
       return res.json();
     },
     onSuccess: () => {
-      alert("URL submitted successfully!");
-      setUrl("");
+      setIsOpen(false);
+      toast("Memory created successfully.");
+      tanstackQueryClient.invalidateQueries({ queryKey: ["memories"] });
     },
-    onError: () => {
-      alert("Submission failed. Please try again.");
+    onSettled: () => {
+      reset();
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutation.mutate(url);
-  };
+  const { Field, Subscribe, handleSubmit, reset } = useForm({
+    defaultValues: {
+      title: "",
+      content: "",
+      tags: "",
+      metadata: "",
+      isFavorite: false,
+    },
+    onSubmit: ({ value }) => {
+      createMemoryMutation.mutate({
+        title: value.title,
+        content: value.content,
+        tags: value.tags
+          ? value.tags.split(",").map((tag) => tag.trim())
+          : [],
+        metadata: value.metadata
+          ? JSON.parse(value.metadata)
+          : undefined,
+        isFavorite: value.isFavorite,
+      });
+    },
+  });
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-4 w-full max-w-2xl"
-      >
-        <input
-          id="urlInput"
-          type="url"
-          required
-          placeholder="https://example.com"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-black dark:text-white"
-        />
-        <button
-          type="submit"
-          disabled={mutation.isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition disabled:opacity-50"
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <div className="rounded-xl shadow border dark:bg-[#050314] p-4 w-full max-w-6xl mx-auto mb-4">
+          <div
+            className="flex items-center space-x-4 cursor-pointer"
+            onClick={() => setIsOpen(true)}
+          >
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+              <AvatarFallback>U</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 border border-blue-400 text-gray-500 px-4 py-2 rounded-full dark:hover:bg-gray-950 transition">
+              Create a memory
+            </div>
+          </div>
+        </div>
+      </DialogTrigger>
+
+      <DialogContent className="max-w-xl w-full">
+        <DialogHeader>
+          <DialogTitle>What's your memory?</DialogTitle>
+          <DialogDescription>Share a personal memory.</DialogDescription>
+        </DialogHeader>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(e);
+          }}
+          className="space-y-4"
         >
-          {mutation.isPending ? "Submitting..." : "Submit"}
-        </button>
-      </form>
-    </div>
+          <Field name="title">
+            {(field) => (
+              <Input
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Memory title"
+              />
+            )}
+          </Field>
+
+          <Field name="content">
+            {(field) => (
+              <Textarea
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Describe your memory"
+                className="resize-none min-h-[120px]"
+              />
+            )}
+          </Field>
+
+          <Field name="tags">
+            {(field) => (
+              <Input
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Tags (comma-separated)"
+              />
+            )}
+          </Field>
+
+          <Field name="metadata">
+            {(field) => (
+              <Input
+                id={field.name}
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder='Metadata (JSON format, e.g. {"location":"Paris"})'
+              />
+            )}
+          </Field>
+
+          <Field name="isFavorite">
+            {(field) => (
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.checked)}
+                />
+                <span>Mark as favorite</span>
+              </label>
+            )}
+          </Field>
+
+          <Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+            {([canSubmit, isSubmitting]) => (
+              <Button
+                type="submit"
+                disabled={
+                  !canSubmit || isSubmitting || createMemoryMutation.isPending
+                }
+              >
+                {createMemoryMutation.isPending && (
+                  <Spinner className="mr-2" />
+                )}
+                Create Memory
+              </Button>
+            )}
+          </Subscribe>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
-}
+};
+
+export default CreateMemory;
