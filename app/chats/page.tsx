@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { serverUrl } from "@/lib/environment";
 
 type ChatMemory = {
@@ -41,6 +41,7 @@ const ChatPage = () => {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [summary, setSummary] = useState("");
+  const [animatedSummary, setAnimatedSummary] = useState("");
   const [memories, setMemories] = useState<ChatMemory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -49,14 +50,18 @@ const ChatPage = () => {
     if (!message.trim()) return;
     setLoading(true);
     setSummary("");
+    setAnimatedSummary("");
     setMemories([]);
     setError("");
 
     try {
-      const res = await fetch(`${serverUrl}/ai/chat?q=${encodeURIComponent(message)}`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${serverUrl}/ai/chat?q=${encodeURIComponent(message)}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const data: ChatApiResponse = await res.json();
 
       if (res.ok && data.success) {
@@ -73,6 +78,20 @@ const ChatPage = () => {
       setMessage("");
     }
   };
+
+  // Typing animation for summary
+  useEffect(() => {
+    if (summary) {
+      let i = 0;
+      setAnimatedSummary("");
+      const interval = setInterval(() => {
+        setAnimatedSummary((prev) => prev + summary.charAt(i));
+        i++;
+        if (i >= summary.length) clearInterval(interval);
+      }, 25);
+      return () => clearInterval(interval);
+    }
+  }, [summary]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -154,6 +173,39 @@ const ChatPage = () => {
             How can I help you today?
           </p>
 
+          {/* AI Summary + Memories */}
+          {!loading && (
+            <>
+              {animatedSummary && (
+                <div className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 rounded-lg shadow">
+                  <h2 className="font-semibold mb-2 text-lg">AI Summary</h2>
+                  <p className="text-gray-800 dark:text-gray-200 whitespace-pre-line">
+                    {animatedSummary}
+                  </p>
+                </div>
+              )}
+
+              {memories.length > 0 && (
+                <div className="space-y-4 mb-6">
+                  <h2 className="font-semibold text-lg">Relevant Memories</h2>
+                  {memories.map((m) => (
+                    <div
+                      key={m.id}
+                      className="p-4 border rounded-md dark:border-gray-700"
+                    >
+                      <h3 className="font-semibold text-base mb-1">
+                        {m.title}
+                      </h3>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        {m.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
           {/* Chat Input */}
           <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 mb-6">
             <input
@@ -181,32 +233,6 @@ const ChatPage = () => {
           )}
           {error && (
             <p className="text-center text-sm text-red-500 mb-4">{error}</p>
-          )}
-
-          {/* AI Summary */}
-          {summary && (
-            <div className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 rounded-lg shadow">
-              <h2 className="font-semibold mb-2 text-lg">AI Summary</h2>
-              <p className="text-gray-800 dark:text-gray-200">{summary}</p>
-            </div>
-          )}
-
-          {/* Relevant Memories */}
-          {memories.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="font-semibold text-lg">Relevant Memories</h2>
-              {memories.map((m) => (
-                <div
-                  key={m.id}
-                  className="p-4 border rounded-md dark:border-gray-700"
-                >
-                  <h3 className="font-semibold text-base mb-1">{m.title}</h3>
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    {m.text}
-                  </p>
-                </div>
-              ))}
-            </div>
           )}
         </div>
       </div>

@@ -12,9 +12,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <AppSidebar />
 
         {/* Main Layout */}
-        <div className="flex flex-col flex-1 overflow-hidden">
+        <div className="flex flex-col flex-1 overflow-hidden bg-background text-foreground">
           {/* Optional Sidebar Trigger */}
-          <SidebarTrigger size={"icon"} />
+          <SidebarTrigger size={'default'} className="" />
 
           {/* Theme & Query Providers */}
           <ThemeProvider

@@ -1,12 +1,11 @@
 "use client";
-import { Calendar, Home, Search } from "lucide-react";
+import { BrainCircuit,  Home, Plus, Search } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -15,15 +14,23 @@ import {
 // Menu items.
 const items = [
   {
+    title: "Nueronote",
+    icon: BrainCircuit,
+    size: 40,
+  },
+  {
     title: "Home",
     url: "/dashboard",
     icon: Home,
+    size: 24,
   },
 
   {
     title: "New chats",
-    url: "#",
-    icon: Calendar,
+    url: "/chats",
+    icon: Plus,
+    size: 24,
+
   },
   {
     title: "Search chats",
@@ -37,9 +44,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xl mb-2">
-            Neuronote
-          </SidebarGroupLabel>
+       
 
           <SidebarGroupContent>
             <SidebarMenu>
