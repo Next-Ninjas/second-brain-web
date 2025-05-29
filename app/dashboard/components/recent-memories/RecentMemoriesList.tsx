@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { serverUrl } from "@/lib/environment";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Memory {
   id: string;
@@ -21,36 +22,45 @@ export default function RecentMemoriesList() {
       if (!res.ok) throw new Error("Failed to fetch recent memories");
       return res.json();
     },
-    staleTime: 1000 * 60, // optional: 1 min cache
+    staleTime: 1000 * 60,
   });
 
   return (
-    <ul className="list bg-base-100 rounded-box shadow-md w-full p-4 space-y-4">
-      <li className="text-xs opacity-60 tracking-wide">Recent Memories</li>
+    <div className="w-full space-y-4">
+   
 
       {isLoading ? (
-        <li className="text-sm text-muted-foreground">Loading...</li>
+        <div className="flex items-center justify-center">
+        <Spinner className="h-6 w-6 text-green-500" />
+        </div>
       ) : (
         memories.map((memory: Memory) => (
-          <li
+          <div
             key={memory.id}
-            className="list-row border-b border-base-200 pb-4"
+            className="bg-muted text-foreground p-4 rounded-lg shadow-sm border border-border"
           >
-            <div className="text-md font-semibold">{memory.title}</div>
-            <div className="text-xs opacity-60 mt-1">
-              {memory.content.length > 80
-                ? memory.content.slice(0, 80) + "..."
-                : memory.content}
+            {/* Title */}
+            <div className="font-bold text-sm mb-1 truncate">
+              {memory.title}
             </div>
-            <Link
-              href={`/memory/${memory.id}`}
-              className="text-green-500 text-sm mt-2 inline-block hover:underline"
-            >
-              Read more →
-            </Link>
-          </li>
+
+            {/* Content + Read more */}
+            <div className="flex justify-between items-center text-sm text-muted-foreground">
+              <span>
+                {memory.content.length > 20
+                  ? memory.content.slice(0, 20) + "..."
+                  : memory.content}
+              </span>
+              <Link
+                href={`/memories/${memory.id}`}
+                className="text-green-500 text-xs font-medium hover:underline"
+              >
+                Read more →
+              </Link>
+            </div>
+          </div>
         ))
       )}
-    </ul>
+    </div>
   );
 }
