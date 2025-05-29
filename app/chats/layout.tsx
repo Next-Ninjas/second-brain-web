@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Main Layout */}
         <div className="flex flex-col flex-1 overflow-hidden">
           {/* Optional Sidebar Trigger */}
-          <SidebarTrigger size={'lg'} />
+          <SidebarTrigger size={"icon"} />
 
           {/* Theme & Query Providers */}
           <ThemeProvider

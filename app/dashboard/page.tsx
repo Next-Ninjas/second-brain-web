@@ -64,7 +64,7 @@ export default function HeroSection() {
 
           {/* Right Side */}
           <div className="w-full">
-            <div className="mockup-window border border-gray-700  bg-[#F3F4F6] dark:bg-background text-foreground">
+            <div className="mockup-window border border-gray-700   dark:bg-background text-foreground">
               <p className=" flex flex-row items-center justify-center font-bold text-[20px]">
                 Recent Memories
               </p>
