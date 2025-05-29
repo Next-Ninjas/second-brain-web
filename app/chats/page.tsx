@@ -16,12 +16,31 @@ import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+type ChatMemory = {
+  id: string;
+  title: string;
+  text: string;
+};
+
+type ChatApiResponse = {
+  success: boolean;
+  query: string;
+  summary: string;
+  results: ChatMemory[];
+  meta?: {
+    count: number;
+    limit: number;
+    offset: number;
+  };
+  message?: string;
+};
+
 const ChatPage = () => {
   const { data: user } = betterAuthClient.useSession();
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [summary, setSummary] = useState("");
-  const [memories, setMemories] = useState([]);
+  const [memories, setMemories] = useState<ChatMemory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,7 +53,7 @@ const ChatPage = () => {
 
     try {
       const res = await fetch(`/api/ai/chat?q=${encodeURIComponent(message)}`);
-      const data = await res.json();
+      const data: ChatApiResponse = await res.json();
 
       if (res.ok && data.success) {
         setSummary(data.summary);
@@ -74,7 +93,6 @@ const ChatPage = () => {
               <span className="hidden sm:inline">{user?.user.name}</span>
             </Button>
           </DropdownMenuTrigger>
-
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel className="font-normal">
               <div className="flex items-center gap-3">
@@ -173,7 +191,7 @@ const ChatPage = () => {
           {memories.length > 0 && (
             <div className="space-y-4">
               <h2 className="font-semibold text-lg">Relevant Memories</h2>
-              {memories.map((m: any) => (
+              {memories.map((m) => (
                 <div
                   key={m.id}
                   className="p-4 border rounded-md dark:border-gray-700"
