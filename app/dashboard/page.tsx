@@ -1,5 +1,32 @@
 "use client";
+import FeatureCards from "./FeatureCards";
 
+const cards = [
+  {
+    logo: "🧠",
+    heading: "Smart Memory Vault",
+    description:
+      "AI-organized memory system for notes, URLs, and ideas. Automatically tags and categorizes your inputs.",
+  },
+  {
+    logo: "🔍",
+    heading: " Semantic Search",
+    description:
+      "Ask natural questions and instantly find related memories. Powered by AI and vector search (Pinecone + Mistral).",
+  },
+  {
+    logo: "💬",
+    heading: "Conversational Interface",
+    description:
+      "Interact with your memories using a chat UI. Ask follow-up questions and receive context-rich answers.",
+  },
+  {
+    logo: "👤",
+    heading: "Personalized Experience",
+    description:
+      "Every user has a secure, private vault. Session data and preferences are preserved and personalized.",
+  },
+];
 import { Button } from "@/components/ui/button";
 import Navbar from "./NavBar";
 import CreateMemory from "../chats/components/create-memory/page";
@@ -27,10 +54,13 @@ export default function HeroSection() {
             </Button>
           </div>
         </div>
+        
 
         {/* Right side - CreateMemory and Button */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-2 flex flex-col sm:flex-row justify-center items-center gap-4"></div>
+        
       </section>
+      <FeatureCards cards={cards} />
     </div>
   );
 }
