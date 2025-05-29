@@ -1,18 +1,30 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { BrainCircuit } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
-import { UserIcon, LogOutIcon } from "lucide-react";
+import { UserIcon, LogOutIcon, Upload, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const Page = () => {
   const { data: user } = betterAuthClient.useSession();
   const router = useRouter();
+  const [message, setMessage] = useState("");
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Sticky Header */}
-      <div className="flex-row sticky top-0 z-50 w-full border-b bg-white dark:bg-[#121212] border-gray-200 px-6 py-1 dark:border-gray-700  flex items-center justify-between">
+      <div className="flex-row sticky top-0 z-50 w-full border-b bg-white dark:bg-[#121212] border-gray-200 px-6 py-1 dark:border-gray-700 flex items-center justify-between">
         <h1 className="text-xl font-bold">Sticky Header</h1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -75,17 +87,43 @@ const Page = () => {
         </DropdownMenu>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 p-4 space-y-1">
-        {Array.from({ length: 100 }).map((_, i) => (
-          <p key={i} className="text-sm">
-            This is some scrollable content item {i + 1}.
-          </p>
-        ))}
-      </div>
-      <div className="flex-row sticky bottom-0 z-50 w-full border-b  dark:bg-[#121212] border-gray-200 dark:border-gray-700 p-4 flex items-center justify-center">
-        <h1 className="text-xl font-bold">Sticky Header</h1>
-        </div>
+      
+      {/* Centered Sticky Chat Input Bar */}
+<div className="min-h-screen flex flex-col items-center justify-center bg-[#121212] px-4">
+  {/* Greeting Section */}
+  <div className="text-center mb-8">
+    <div className="flex items-center justify-center gap-2 mb-4">
+  <BrainCircuit color="green" size={30} />
+  <h1 className="text-2xl sm:text-3xl font-bold text-white">Hi, I'm NeuroNote.</h1>
+</div>
+
+    <p className="text-gray-400 text-base sm:text-lg mt-2">How can I help you today?</p>
+  </div>
+
+  {/* Your Existing Chat Input UI */}
+  <div className="w-full max-w-2xl">
+    <div className="flex items-center w-full gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2">
+      <input
+        type="text"
+        placeholder="Type your message..."
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        className="flex-1 bg-transparent outline-none text-sm text-white placeholder:text-gray-400"
+      />
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => {
+          console.log("Sending:", message);
+          setMessage("");
+        }}
+      >
+        <Send className="h-5 w-5 text-white" />
+      </Button>
+    </div>
+  </div>
+</div>
+
     </div>
   );
 };
