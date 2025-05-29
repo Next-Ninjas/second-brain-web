@@ -33,7 +33,6 @@ const cards = [
   },
 ];
 
-
 export default function HeroSection() {
   return (
     <div className="flex flex-col min-h-screen bg-background ">
@@ -56,13 +55,11 @@ export default function HeroSection() {
             </Button>
           </div>
         </div>
-        
 
         {/* Right side - CreateMemory and Button */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-2 flex flex-col sm:flex-row justify-center items-center gap-4">
           <RecentMemoriesList />
         </div>
-        
       </section>
       <FeatureCards cards={cards} />
     </div>
