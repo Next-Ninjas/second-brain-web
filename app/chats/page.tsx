@@ -53,7 +53,10 @@ const ChatPage = () => {
     setError("");
 
     try {
-      const res = await fetch(`${serverUrl}/ai/chat?q=${encodeURIComponent(message)}`);
+      const res = await fetch(`${serverUrl}/ai/chat?q=${encodeURIComponent(message)}`, {
+        method: "GET",
+        credentials: "include",
+      });
       const data: ChatApiResponse = await res.json();
 
       if (res.ok && data.success) {
