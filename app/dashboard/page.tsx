@@ -1,5 +1,10 @@
 "use client";
-import FeatureCards from "./FeatureCards";
+import FeatureCards from "./components/feature-card/FeatureCards";
+import { Button } from "@/components/ui/button";
+import Navbar from "./NavBar";
+import CreateMemory from "../chats/components/create-memory/page";
+import Link from "next/link";
+import RecentMemoriesList from "./components/recent-memories/RecentMemoriesList";
 
 const cards = [
   {
@@ -27,11 +32,7 @@ const cards = [
       "Every user has a secure, private vault. Session data and preferences are preserved and personalized.",
   },
 ];
-import { Button } from "@/components/ui/button";
-import Navbar from "./NavBar";
-import CreateMemory from "../chats/components/create-memory/page";
-import Link from "next/link";
-import RecentMemoriesList from "../chats/components/recent-memories/RecentMemoriesList";
+
 
 export default function HeroSection() {
   return (
@@ -59,7 +60,7 @@ export default function HeroSection() {
 
         {/* Right side - CreateMemory and Button */}
         <div className="col-span-1 sm:col-span-2 lg:col-span-2 flex flex-col sm:flex-row justify-center items-center gap-4">
-          
+          <RecentMemoriesList />
         </div>
         
       </section>
