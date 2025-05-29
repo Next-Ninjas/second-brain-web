@@ -14,7 +14,10 @@ export default function RecentMemoriesList() {
   const { data: memories = [], isLoading } = useQuery({
     queryKey: ["recent-memories"],
     queryFn: async () => {
-      const res = await fetch(`${serverUrl}/memories/recent?limit=5`);
+      const res = await fetch(`${serverUrl}/memories/recent?limit=5`, {
+        method: "GET",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch recent memories");
       return res.json();
     },
