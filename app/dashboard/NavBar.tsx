@@ -19,7 +19,9 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <BrainCircuit color="green" size={30} />
-          <span className="font-semibold text-lg">NeuroNote</span>
+          <span className="font-semibold text-lg">
+            <Link href={"/dashboard"}>NeuroNote</Link>
+          </span>
         </div>
 
         {/* Right-side icons: GitHub and ModeToggle */}

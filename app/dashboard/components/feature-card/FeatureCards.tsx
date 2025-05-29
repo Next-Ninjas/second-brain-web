@@ -1,35 +1,4 @@
-// "use client";
 
-// type FeatureCard = {
-//   logo: string;
-//   heading: string;
-//   description: string;
-// };
-
-// type FeatureCardsProps = {
-//   cards: FeatureCard[];
-// };
-
-// export default function FeatureCards({ cards }: FeatureCardsProps) {
-//   return (
-//     <section className="bg-black text-white py-16 px-4"> {/* Removed mt-16 */}
-//       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//         {cards.map((card, index) => (
-//           <div
-//             key={index}
-//             className="bg-gray-900 rounded-xl p-6 shadow hover:shadow-lg transition"
-//           >
-//             <div className="mb-4">
-//               <span className="text-3xl">{card.logo}</span>
-//             </div>
-//             <h3 className="font-bold text-lg mb-2">{card.heading}</h3>
-//             <p className="text-neutral-400 text-sm">{card.description}</p>
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// }
 "use client";
 
 type FeatureCard = {
@@ -44,7 +13,7 @@ type FeatureCardsProps = {
 
 export default function FeatureCards({ cards }: FeatureCardsProps) {
   return (
-    <section className="bg-white dark:bg-black text-black dark:text-white py-16 px-4">
+    <section className=" py-16 px-4 bg-background text-foreground">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (
           <div
@@ -53,7 +22,9 @@ export default function FeatureCards({ cards }: FeatureCardsProps) {
           >
             <div className="mb-4 text-4xl">{card.logo}</div>
             <h3 className="font-bold text-lg mb-2">{card.heading}</h3>
-            <p className="text-gray-600 dark:text-neutral-400 text-sm">{card.description}</p>
+            <p className="text-gray-600 dark:text-neutral-400 text-sm">
+              {card.description}
+            </p>
           </div>
         ))}
       </div>
