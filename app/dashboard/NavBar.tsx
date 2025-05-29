@@ -14,7 +14,7 @@ export default function Navbar() {
   const router = useRouter();
   const { data: user } = betterAuthClient.useSession();
   return (
-    <header className="sticky top-0 z-50 w-full border-b dark:border-green-200 border-green-400 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b text-black dark:text-white dark:border-green-200 border-green-400 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:py-4">
         {/* Logo */}
         <div className="flex items-center gap-2">
@@ -34,6 +34,7 @@ export default function Navbar() {
           </Link>
           <ModeToggle />
 
+          {/* User Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
