@@ -162,16 +162,20 @@ const ChatPage = () => {
       <div className="flex flex-1 items-center justify-center bg-white dark:bg-[#121212] px-4 py-10">
         <div className="w-full max-w-2xl">
           {/* Header */}
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <BrainCircuit color="green" size={30} />
-            <h1 className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white">
-              Hi, I&apos;m NeuroNote.
-            </h1>
-          </div>
-
-          <p className="text-gray-600 dark:text-gray-400 text-center text-base sm:text-lg mb-8">
-            How can I help you today?
-          </p>
+          {/* Header */}
+          {!summary && !memories.length && !loading && (
+            <>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <BrainCircuit color="green" size={30} />
+                <h1 className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white">
+                  Hi, I&apos;m NeuroNote.
+                </h1>
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 text-center text-base sm:text-lg mb-8">
+                How can I help you today?
+              </p>
+            </>
+          )}
 
           {/* AI Summary + Memories */}
           {!loading && (
@@ -205,7 +209,12 @@ const ChatPage = () => {
               )}
             </>
           )}
-
+          {/* Loading State */}
+          {loading && (
+            <p className="text-center text-sm text-muted-foreground mb-4">
+              Thinking...
+            </p>
+          )}
           {/* Chat Input */}
           <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 mb-6">
             <input
@@ -225,12 +234,8 @@ const ChatPage = () => {
             </Button>
           </div>
 
-          {/* Loading/Error */}
-          {loading && (
-            <p className="text-center text-sm text-muted-foreground mb-4">
-              Thinking...
-            </p>
-          )}
+          {/* Error */}
+
           {error && (
             <p className="text-center text-sm text-red-500 mb-4">{error}</p>
           )}
