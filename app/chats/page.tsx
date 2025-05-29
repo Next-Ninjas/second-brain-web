@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BrainCircuit } from "lucide-react";
+import { BrainCircuit, LogOutIcon, Send, UserIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
-import { UserIcon, LogOutIcon, Upload, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -87,43 +86,45 @@ const Page = () => {
         </DropdownMenu>
       </div>
 
-      
-      {/* Centered Sticky Chat Input Bar */}
-<div className="min-h-screen flex flex-col items-center justify-center bg-[#121212] px-4">
-  {/* Greeting Section */}
-  <div className="text-center mb-8">
-    <div className="flex items-center justify-center gap-2 mb-4">
-  <BrainCircuit color="green" size={30} />
-  <h1 className="text-2xl sm:text-3xl font-bold text-white">Hi, I'm NeuroNote.</h1>
-</div>
+      {/* Fullscreen Centered Chat Area */}
+      <div className="flex flex-1 items-center justify-center bg-white dark:bg-[#121212] px-4 py-10">
+        <div className="w-full max-w-2xl text-center">
+          {/* Header Row */}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <BrainCircuit color="green" size={30} />
+            <h1 className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white">
+              Hi, I'm NeuroNote.
+            </h1>
+          </div>
 
-    <p className="text-gray-400 text-base sm:text-lg mt-2">How can I help you today?</p>
-  </div>
+          <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg mb-8">
+            How can I help you today?
+          </p>
 
-  {/* Your Existing Chat Input UI */}
-  <div className="w-full max-w-2xl">
-    <div className="flex items-center w-full gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2">
-      <input
-        type="text"
-        placeholder="Type your message..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        className="flex-1 bg-transparent outline-none text-sm text-white placeholder:text-gray-400"
-      />
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => {
-          console.log("Sending:", message);
-          setMessage("");
-        }}
-      >
-        <Send className="h-5 w-5 text-white" />
-      </Button>
-    </div>
-  </div>
-</div>
-
+          {/* Chat Input */}
+          <div className="w-full">
+            <div className="flex items-center w-full gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-1 bg-transparent outline-none text-sm text-neutral-800 dark:text-white placeholder:text-gray-400"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  console.log("Sending:", message);
+                  setMessage("");
+                }}
+              >
+                <Send className="h-5 w-5 text-white" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
