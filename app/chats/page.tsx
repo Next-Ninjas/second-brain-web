@@ -15,6 +15,7 @@ import {
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { serverUrl } from "@/lib/environment";
 
 type ChatMemory = {
   id: string;
@@ -52,7 +53,7 @@ const ChatPage = () => {
     setError("");
 
     try {
-      const res = await fetch(`/api/ai/chat?q=${encodeURIComponent(message)}`);
+      const res = await fetch(`${serverUrl}/ai/chat?q=${encodeURIComponent(message)}`);
       const data: ChatApiResponse = await res.json();
 
       if (res.ok && data.success) {
