@@ -68,7 +68,7 @@ export default function HeroSection() {
               <p className=" flex flex-row items-center justify-center font-bold text-[20px]">
                 Recent Memories
               </p>
-              <div className="p-4 border-t border-gray-700  h-[350px] overflow-y-auto">
+              <div className="p-4 border-t border-gray-700  h-[400px] overflow-y-auto">
                 <RecentMemoriesList />
               </div>
             </div>
