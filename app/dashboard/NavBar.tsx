@@ -34,6 +34,7 @@ export default function Navbar() {
           </Link>
           <ModeToggle />
 
+          {/* User Dropdown Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
