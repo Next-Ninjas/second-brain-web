@@ -2,7 +2,7 @@
 import FeatureCards from "./components/feature-card/FeatureCards";
 import { Button } from "@/components/ui/button";
 import Navbar from "./NavBar";
-import CreateMemory from "../chats/components/create-memory/page";
+import CreateMemory from "./components/create-memory/page";
 import Link from "next/link";
 import RecentMemoriesList from "./components/recent-memories/RecentMemoriesList";
 

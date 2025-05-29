@@ -49,6 +49,7 @@ const CreateMemory = () => {
       setIsOpen(false);
       toast.success("Memory created successfully.");
       tanstackQueryClient.invalidateQueries({ queryKey: ["memories"] });
+      tanstackQueryClient.invalidateQueries({ queryKey: ["recent-memories"] }); 
     },
     onSettled: () => {
       reset();
