@@ -93,7 +93,7 @@ const Page = () => {
           <div className="flex items-center justify-center gap-2 mb-4">
             <BrainCircuit color="green" size={30} />
             <h1 className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white">
-              Hi, I'm NeuroNote.
+              Hi, I&apos;m NeuroNote.
             </h1>
           </div>
 

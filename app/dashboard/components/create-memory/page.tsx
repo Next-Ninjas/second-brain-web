@@ -82,7 +82,7 @@ const CreateMemory = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-xl w-full">
+      <DialogContent className="max-w-xl w-full text-black dark:text-white">
         <DialogHeader>
           <DialogTitle>What’s your memory?</DialogTitle>
           <DialogDescription>Share a personal memory.</DialogDescription>

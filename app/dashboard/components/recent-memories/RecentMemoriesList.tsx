@@ -15,7 +15,7 @@ export default function RecentMemoriesList() {
   const { data: memories = [], isLoading } = useQuery({
     queryKey: ["recent-memories"],
     queryFn: async () => {
-      const res = await fetch(`${serverUrl}/memories/recent?limit=5`, {
+      const res = await fetch(`${serverUrl}/memories/recent?limit=4`, {
         method: "GET",
         credentials: "include",
       });
