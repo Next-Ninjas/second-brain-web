@@ -12,8 +12,8 @@ const inter = Inter({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: "Second Brain",
-  description: "Second Brain is a AI-powered personal knowledge assistant.",
+  title: "Nueronote",
+  description: "Neuronote is a AI-powered personal knowledge assistant.",
 };
 
 const RootLayout = (props: PropsWithChildren) => {
