@@ -17,6 +17,7 @@ const middleware = (request: NextRequest) => {
 };
 
 export default middleware;
+
 export const config = {
-  matcher: [ "/dashboard/:path*", "/chats/:path*"],
+  matcher: ["/", "/dashboard/:path*", "/chats/:path*"],
 };
