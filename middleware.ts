@@ -18,6 +18,7 @@ const middleware = (request: NextRequest) => {
 
 export default middleware;
 
+// This middleware checks if the user is authenticated by looking for a session cookie.
 export const config = {
   matcher: ["/", "/dashboard/:path*", "/chats/:path*"],
 };
