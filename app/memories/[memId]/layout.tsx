@@ -11,7 +11,11 @@ export default function MemoryLayout({
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main className="min-h-screen">
+        <div className="mx-auto mt-4 px-4 sm:px-6 lg:px-8 max-w-7xl">
+          {children}
+        </div>
+      </main>
     </>
   );
 }

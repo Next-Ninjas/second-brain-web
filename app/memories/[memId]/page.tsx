@@ -44,7 +44,7 @@ const MemoryPage = async ({
         <div className="flex flex-col items-stretch gap-4 max-w-4xl mx-auto px-4 pb-24">
           <Card
             key={data.id}
-            className="w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900"
+            className="w-full cursor-pointer hover:bg-gray-50 dark:hover:bg-background"
           >
             <CardHeader className="relative group">
               <h2 className="text-xl font-semibold cursor-pointer ">
@@ -59,10 +59,11 @@ const MemoryPage = async ({
             <Separator />
 
             <CardFooter className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-2">
-             
+              <span className="text-xs text-muted-foreground order-first sm:order-none">
+                {new Date(data.createdAt).toLocaleString()}
+              </span>
             </CardFooter>
           </Card>
-
         </div>
       </div>
     </>
