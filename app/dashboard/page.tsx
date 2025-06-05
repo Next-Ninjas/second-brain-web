@@ -57,7 +57,7 @@ export default function HeroSection() {
                 variant="secondary"
                 className="font-semibold px-6 py-3 rounded-xl transition w-full sm:w-auto"
               >
-                <Link href={"/chat"}>Chat Memory</Link>
+                <Link href={"/chats"}>Chat Memory</Link>
               </Button>
             </div>
           </div>

@@ -340,7 +340,7 @@ export default function Page() {
             <Link href={"/dashboard"}>
               <BrainCircuit size={32} />
             </Link>
-            {!collapsed && <span className="font-extrabold">Nuronote</span>}
+            <span className="font-extrabold">Nuronote</span>
           </div>
 
           <button
@@ -362,7 +362,7 @@ export default function Page() {
             }`}
           >
             <Plus size={20} />
-            {!collapsed && <span>New Chat</span>}
+            <span>New Chat</span>
           </button>
 
           <Link
@@ -371,18 +371,16 @@ export default function Page() {
             onClick={() => setMobileSidebarOpen(false)}
           >
             <Search size={20} />
-            {!collapsed && <span>My Memories</span>}
+            <span>My Memories</span>
           </Link>
         </nav>
 
         <hr className="my-4 border-white/20 mx-2" />
 
         <div className="px-2 flex-1 overflow-y-auto">
-          {!collapsed && (
-            <h3 className="text-sm font-semibold mb-2 sticky top-0 bg-[#212121] py-2 z-10">
-              Recent Sessions
-            </h3>
-          )}
+          <h3 className="text-sm font-semibold mb-2 sticky top-0 bg-[#212121] py-2 z-10">
+            Recent Sessions
+          </h3>
           <ul className="space-y-1">
             {sessions.map((session) => (
               <li key={session.id} className="group relative">
@@ -395,44 +393,33 @@ export default function Page() {
                     activeSessionId === session.id ? "bg-white/20" : ""
                   }`}
                 >
-                  <div className="truncate">
-                    {!collapsed ? (
-                      <>
-                        <div className="font-medium truncate">
-                          {session.title || "New Chat"}
-                        </div>
-                        {session.messages.length > 0 && (
-                          <div className="text-[15px] text-gray-400 truncate">
-                            {session.messages[
-                              session.messages.length - 1
-                            ].content.slice(0, 20)}
-                            {session.messages[session.messages.length - 1]
-                              .content.length > 20 && "..."}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <BrainCircuit size={20} />
+                  <div className="font-medium truncate">
+                    {session.title || "New Chat"}
+                    {session.messages.length > 0 && (
+                      <div className="text-[15px] text-gray-400 truncate">
+                        {session.messages[
+                          session.messages.length - 1
+                        ].content.slice(0, 20)}
+                        {session.messages[session.messages.length - 1].content
+                          .length > 20 && "..."}
+                      </div>
                     )}
                   </div>
                 </button>
-                {!collapsed && (
-                  <button
-                    onClick={() => deleteSession(session.id)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity"
-                    title="Delete session"
-                  >
-                    ×
-                  </button>
-                )}
+                <button
+                  onClick={() => deleteSession(session.id)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity"
+                  title="Delete session"
+                >
+                  ×
+                </button>
               </li>
             ))}
           </ul>
         </div>
-
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className=" md:block absolute top-20 -right-3 w-6 h-6 bg-white text-black rounded-full flex items-center justify-center shadow-md z-50"
+          className="hidden md:block absolute top-20 -right-3 w-6 h-6 bg-white text-black rounded-full  items-center justify-center shadow-md z-50"
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
@@ -449,6 +436,7 @@ export default function Page() {
           </div>
         </div>
       </header>
+
       {/* Main Content */}
       <main className="w-full flex flex-col min-h-0 md:col-start-2 md:row-start-2">
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -536,7 +524,7 @@ export default function Page() {
                   {sessionMessages.map((msg) => (
                     <div
                       key={msg.id}
-                      className={`p-4 rounded-lg max-w-3xl mx-auto whitespace-pre-wrap break-words ${
+                      className={`p-4 rounded-lg max-w-3xl mx-auto ${
                         msg.role === "user"
                           ? "bg-blue-100 dark:bg-blue-900/30 ml-auto"
                           : "bg-green-100 dark:bg-green-900/30"
@@ -545,16 +533,14 @@ export default function Page() {
                       <div className="font-semibold mb-1">
                         {msg.role === "user" ? "You" : "NeuroNote"}
                       </div>
-                      <div className="text-sm text-gray-800 dark:text-gray-200">
-                        {msg.content}
-                      </div>
+                      <div className="whitespace-pre-line">{msg.content}</div>
                     </div>
                   ))}
 
                   {streamingMessage && (
-                    <div className="p-4 rounded-lg max-w-3xl mx-auto bg-green-100 dark:bg-green-900/30 whitespace-pre-wrap break-words">
+                    <div className="p-4 rounded-lg max-w-3xl mx-auto bg-green-100 dark:bg-green-900/30">
                       <div className="font-semibold mb-1">NeuroNote</div>
-                      <div className="text-sm text-gray-800 dark:text-gray-200">
+                      <div className="whitespace-pre-line">
                         {streamingMessage.content}
                         {streamingMessage.content.length <
                           streamingMessage.fullContent.length && (
@@ -563,7 +549,6 @@ export default function Page() {
                       </div>
                     </div>
                   )}
-
                   <div ref={messagesEndRef} />
                 </div>
               )}

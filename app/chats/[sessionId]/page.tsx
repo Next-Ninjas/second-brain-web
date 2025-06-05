@@ -1,5 +1,10 @@
-// app/chats/[sessionId]/page.tsx
-import { notFound } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { serverUrl } from "@/lib/environment";
 import { forwardableHeaders } from "@/lib/extras/headers";
 
@@ -41,34 +46,53 @@ async function fetchChatSession(
   }
 }
 
-export default async function ChatPage({
+const ChatPage = async ({
   params,
 }: {
-  params: { sessionId: string };
-}) {
-  const session = await fetchChatSession(params.sessionId);
-  if (!session) return notFound();
+  params: Promise<{ sessionId: string }>;
+}) => {
+  const { sessionId } = await params;
+
+  const session = await fetchChatSession(sessionId);
+  if (!session) return null;
 
   return (
-    <div className="min-h-screen p-6 space-y-4 bg-gray-50 dark:bg-black text-black dark:text-white">
-      <h1 className="text-2xl font-bold">{session.title}</h1>
-      <div className="space-y-2">
-        {session.messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`p-4 rounded-xl max-w-2xl ${
-              msg.role === "user"
-                ? "bg-blue-100 dark:bg-blue-900 ml-auto text-right"
-                : "bg-gray-200 dark:bg-gray-800"
-            }`}
-          >
-            <p>{msg.content}</p>
-            <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {new Date(msg.createdAt).toLocaleString()}
-            </span>
-          </div>
-        ))}
+    <div className="relative">
+      <div className="flex flex-col items-stretch gap-4 max-w-4xl mx-auto px-4 pb-24">
+        <Card className="w-full">
+          <CardHeader>
+            <h2 className="text-xl font-semibold">{session.title}</h2>
+          </CardHeader>
+
+          <Separator />
+
+          <CardContent className="space-y-4">
+            {session.messages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`p-4 rounded-xl ${
+                  msg.role === "user"
+                    ? "bg-blue-100 dark:bg-blue-900 text-right"
+                    : "bg-gray-100 dark:bg-gray-800"
+                }`}
+              >
+                <p>{msg.content}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {new Date(msg.createdAt).toLocaleString()}
+                </p>
+              </div>
+            ))}
+          </CardContent>
+
+          <Separator />
+
+          <CardFooter className="text-xs text-muted-foreground">
+            Session ID: {session.id}
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );
-}
+};
+
+export default ChatPage;
