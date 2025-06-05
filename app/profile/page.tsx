@@ -1,71 +1,143 @@
-// "use client";
-
-// import { useRouter } from "next/navigation";
-// import { useState } from "react";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { Button } from "@/components/ui/button";
-// import { betterAuthClient } from "@/lib/integrations/better-auth";
-
-// export default function ProfilePage() {
-//   const router = useRouter();
-//   const { data: session } = betterAuthClient.useSession();
-//   const user = session?.user;
-
-//   return (
-//     <div className="max-w-3xl mx-auto py-10 px-4">
-//       <div className="flex items-center gap-6">
-//         <div className="relative group">
-//           <Avatar className="w-24 h-24">
-//             <AvatarImage src={user?.image || ""} />
-//             <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
-//           </Avatar>
-//           <div
-//             onClick={() => router.push("/profile/edit")}
-//             className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center text-white cursor-pointer opacity-0 group-hover:opacity-100"
-//           >
-//             {user?.image ? "Change Photo" : "Upload Photo"}
-//           </div>
-//         </div>
-
-//         <div>
-//           <h2 className="text-xl font-semibold">{user?.name}</h2>
-//           <Button onClick={() => router.push("/profile/edit")} className="mt-2">
-//             Edit Profile
-//           </Button>
-//         </div>
-//       </div>
-
-//       <div className="mt-6">
-//         {/* <p><strong>Bio:</strong> {user?.bio || "No bio added yet."}</p> */}
-//       </div>
-//     </div>
-//   );
-// }
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { betterAuthClient } from "@/lib/integrations/better-auth";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
-export default function ProfilePage() {
+import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { EditProfileSheet } from "./EditProfile";
+import { serverUrl } from "@/lib/environment";
+import { User } from "@/lib/extras/schemas/user";
+
+const UserProfilePage = () => {
+  const { data: sessionUser } = betterAuthClient.useSession();
   const router = useRouter();
-  const { data: session } = betterAuthClient.useSession();
-  const user = session?.user;
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["current-user"],
+    queryFn: async () => {
+      const response = await fetch(`${serverUrl}/profile/me`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          response.status === 401
+            ? "Please login to view your profile"
+            : `Failed to fetch user data: ${errorText || response.status}`
+        );
+      }
+
+      const json = await response.json();
+
+      try {
+        const result = User.parse(json.user); // ✅ access .user before validation
+        return result;
+      } catch (validationError) {
+        console.error("Validation error:", validationError);
+        throw new Error("Invalid user data format from server");
+      }
+    },
+  });
+  
+
+
+  if (error) {
+    return (
+      <Card className="max-w-3xl mx-auto my-10">
+        <CardContent className="flex items-center justify-center text-destructive text-center py-6">
+          {error.message}
+        </CardContent>
+        <CardFooter className="justify-center pb-6">
+          <Button variant="outline" onClick={() => router.refresh()}>
+            Try Again
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Card className="max-w-3xl mx-auto my-10">
+        <CardContent className="flex items-center justify-center py-6">
+          <Spinner />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!data) {
+    return (
+      <Card className="max-w-3xl mx-auto my-10">
+        <CardContent className="flex items-center justify-center py-6">
+          No user data available
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <div className="max-w-2xl mx-auto py-10 px-4 text-center space-y-4">
-      <div className="flex flex-col items-center gap-4">
-        <div className="relative group">
-          <Avatar className="h-28 w-28">
-            <AvatarImage src={user?.image || ""} />
-            <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
-          </Avatar>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Card className="mb-8 w-full px-4 sm:px-6 py-6 relative">
+        <div className="absolute right-4 top-4 sm:top-1/2 sm:-translate-y-1/2">
+          <EditProfileSheet user={data} />
         </div>
-        <h1 className="text-xl font-bold">{user?.name || "Your Name"}</h1>
-        {/* <p className="text-gray-500">{user?.bio || "No bio yet."}</p> */}
-        <Button onClick={() => router.push("/profile/edit")}>Edit Profile</Button>
-      </div>
+
+        <CardHeader className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="h-16 w-16 flex items-center justify-center rounded-full bg-primary text-white text-2xl font-semibold">
+            {data.name?.charAt(0)?.toUpperCase() || "U"}
+          </div>
+          <div className="flex flex-col text-center sm:text-left">
+            <CardTitle className="text-xl sm:text-2xl">
+              {data.name
+                ? data.name.charAt(0).toUpperCase() + data.name.slice(1)
+                : "Anonymous User"}
+            </CardTitle>
+            {data.email && (
+              <p className="text-muted-foreground text-sm">{data.email}</p>
+            )}
+            {data.createdAt && (
+              <p className="text-muted-foreground text-sm">
+                Joined on:{" "}
+                {new Date(data.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            )}
+          </div>
+        </CardHeader>
+
+        <CardContent className="mt-4 space-y-2">
+         
+
+          {typeof data.memoriesCount === "number" && (
+            <p className="text-sm sm:text-base text-center sm:text-left">
+              <span className="font-medium text-foreground">
+                Memories Created:
+              </span>{" "}
+              <span className="text-primary font-semibold">
+                {data.memoriesCount}
+              </span>
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
-}
+};
+
+export default UserProfilePage;
