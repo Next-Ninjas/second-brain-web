@@ -12,7 +12,8 @@ import {
   Sparkles,
   X,
   ChevronLeft, // Added for collapse icon
-  ChevronRight, // Added for expand icon
+  ChevronRight,
+  BotMessageSquare, // Added for expand icon
 } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "@/components/ui/ModeToggle";
@@ -30,6 +31,9 @@ import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { useRouter } from "next/navigation";
 import { serverUrl } from "@/lib/environment";
+import { useQueryClient } from "@tanstack/react-query";
+import { Separator } from "@/components/ui/separator";
+
 
 type ChatSession = {
   id: string;
@@ -65,6 +69,7 @@ export default function Page() {
   const router = useRouter();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const streamingRef = useRef<NodeJS.Timeout | null>(null);
+  const queryClient = useQueryClient();
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -99,7 +104,7 @@ export default function Page() {
         });
         const data = await res.json();
         if (res.ok && data.success) {
-          const safeSessions = data.sessions.map((s: any) => ({
+          const safeSessions = data.sessions.map((s: ChatSession) => ({
             ...s,
             messages: s.messages || [],
           }));
@@ -144,6 +149,8 @@ export default function Page() {
     scrollToBottom();
   }, [sessionMessages, streamingMessage]);
 
+ 
+
   // Handle streaming effect
   useEffect(() => {
     if (streamingMessage) {
@@ -163,7 +170,37 @@ export default function Page() {
           } else {
             clearInterval(streamingRef.current as NodeJS.Timeout);
             streamingRef.current = null;
-            return null;
+
+            // ✅ Push final assistant message to both query cache and state
+            const completedMessage = {
+              id: prev.id,
+              content: prev.fullContent,
+              role: "assistant",
+              createdAt: new Date(),
+            };
+
+            // Push to local state immediately
+            setSessionMessages((old) => {
+              const exists = old.find((m) => m.id === completedMessage.id);
+              return exists ? old : [...old, completedMessage];
+            });
+
+            // Push to query cache
+            queryClient.setQueryData<ChatMessage[]>(
+              ["sessionMessages", activeSessionId],
+              (oldMessages) => {
+                if (!oldMessages) return [completedMessage];
+                const exists = oldMessages.find(
+                  (m) => m.id === completedMessage.id
+                );
+                return exists
+                  ? oldMessages
+                  : [...oldMessages, completedMessage];
+              }
+            );
+            
+
+            return null; // Clear streamingMessage
           }
         });
       }, 20);
@@ -175,7 +212,8 @@ export default function Page() {
         streamingRef.current = null;
       }
     };
-  }, [streamingMessage]);
+  }, [streamingMessage, queryClient, activeSessionId]);
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -195,7 +233,6 @@ export default function Page() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        const newSessions = await fetchSessions();
         setActiveSessionId(data.session.id);
         setSessionMessages([]);
         setRelevantMemories([]);
@@ -209,14 +246,16 @@ export default function Page() {
     }
   };
 
-  const fetchSessions = async () => {
+  const fetchSessions = async (): Promise<ChatSession[]> => {
     try {
       const res = await fetch(`${serverUrl}/chats/all/sessions`, {
         credentials: "include",
       });
-      const data = await res.json();
+      const data: { success: boolean; sessions: ChatSession[] } =
+        await res.json();
+
       if (res.ok && data.success) {
-        const safeSessions = data.sessions.map((s: any) => ({
+        const safeSessions = data.sessions.map((s) => ({
           ...s,
           messages: s.messages || [],
         }));
@@ -228,7 +267,7 @@ export default function Page() {
     }
     return [];
   };
-
+  
   const handleSend = async () => {
     if (!message.trim() || !activeSessionId) return;
     setLoading(true);
@@ -399,7 +438,7 @@ export default function Page() {
                     {!collapsed ? (
                       <>
                         <div className="font-medium truncate">
-                          {session.title || "New Chat"}
+                          {session.title || " Chats"}
                         </div>
                         {session.messages.length > 0 && (
                           <div className="text-[15px] text-gray-400 truncate">
@@ -412,7 +451,7 @@ export default function Page() {
                         )}
                       </>
                     ) : (
-                      <BrainCircuit size={20} />
+                      <BotMessageSquare size={16} />
                     )}
                   </div>
                 </button>
@@ -439,16 +478,79 @@ export default function Page() {
       </aside>
 
       {/* Header */}
-      <header className="w-full px-4 py-2 sm:px-6 sm:py-4 md:col-start-2">
-        <div className="flex items-center justify-between">
+      <header className="w-full px-4 py-2 sm:px-6 sm:py-4 md:col-start-2 ">
+        <div className="flex items-center justify-between py-2">
           <div className="text-lg font-bold">
-            {activeSession ? activeSession.title : "Select a chat"}
+            {activeSession ? "Chats" : "Select a chat"}
           </div>
           <div className="flex items-center gap-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-2 rounded-full"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={user?.user.image || "https://github.com/shadcn.png"}
+                      alt={user?.user.name || "User"}
+                    />
+                    <AvatarFallback>
+                      {user?.user.name?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden sm:inline">{user?.user.name}</span>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage
+                        src={
+                          user?.user.image || "https://github.com/shadcn.png"
+                        }
+                        alt={user?.user.name || "User"}
+                      />
+                      <AvatarFallback>
+                        {user?.user.name.charAt(0).toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="truncate font-medium">
+                        {user?.user.name}
+                      </span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {user?.user.email}
+                      </span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      const response = await betterAuthClient.signOut();
+                      if (response.data) router.replace("/");
+                    }}
+                  >
+                    <LogOutIcon className="mr-2 h-4 w-4" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <ModeToggle />
           </div>
         </div>
+        <Separator />
       </header>
+
       {/* Main Content */}
       <main className="w-full flex flex-col min-h-0 md:col-start-2 md:row-start-2">
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
@@ -473,7 +575,9 @@ export default function Page() {
             <div className="h-full flex flex-col items-center justify-center">
               <div className="text-center">
                 <BrainCircuit className="mx-auto mb-4" size={40} />
-                <h3 className="text-xl font-semibold">What's on your mind?</h3>
+                <h3 className="text-xl font-semibold">
+                  What&apos;s on your mind?
+                </h3>
                 <p className="text-muted-foreground mt-2">
                   Start a conversation with NeuroNote
                 </p>
@@ -531,7 +635,11 @@ export default function Page() {
               )}
 
               {/* Chat Messages */}
-              {(sessionMessages.length > 0 || streamingMessage) && (
+              {(sessionMessages.length > 0 ||
+                (streamingMessage &&
+                  !sessionMessages.some(
+                    (msg) => msg.id === streamingMessage.id
+                  ))) && (
                 <div className="space-y-4 pb-4">
                   {sessionMessages.map((msg) => (
                     <div
@@ -551,18 +659,21 @@ export default function Page() {
                     </div>
                   ))}
 
-                  {streamingMessage && (
-                    <div className="p-4 rounded-lg max-w-3xl mx-auto bg-green-100 dark:bg-green-900/30 whitespace-pre-wrap break-words">
-                      <div className="font-semibold mb-1">NeuroNote</div>
-                      <div className="text-sm text-gray-800 dark:text-gray-200">
-                        {streamingMessage.content}
-                        {streamingMessage.content.length <
-                          streamingMessage.fullContent.length && (
-                          <span className="inline-block ml-1 h-2 w-2 bg-current rounded-full animate-pulse"></span>
-                        )}
+                  {streamingMessage &&
+                    !sessionMessages.some(
+                      (msg) => msg.id === streamingMessage.id
+                    ) && (
+                      <div className="p-4 rounded-lg max-w-3xl mx-auto bg-green-100 dark:bg-green-900/30 whitespace-pre-wrap break-words">
+                        <div className="font-semibold mb-1">NeuroNote</div>
+                        <div className="text-sm text-gray-800 dark:text-gray-200">
+                          {streamingMessage.content}
+                          {streamingMessage.content.length <
+                            streamingMessage.fullContent.length && (
+                            <span className="inline-block ml-1 h-2 w-2 bg-current rounded-full animate-pulse"></span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   <div ref={messagesEndRef} />
                 </div>
@@ -578,36 +689,38 @@ export default function Page() {
         </div>
 
         {/* Fixed Input Bar */}
-        <div className="sticky bottom-0 bg-background border-t p-4">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2">
-            <input
-              type="text"
-              placeholder="Type your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="flex-1 bg-transparent outline-none text-sm placeholder:text-gray-500 dark:placeholder:text-gray-400"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-              disabled={loading || !activeSessionId}
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleSend}
-              disabled={loading || !activeSessionId || !message.trim()}
-              className="self-end sm:self-auto"
-            >
-              <Send className="h-5 w-5" />
-            </Button>
-          </div>
+        <div className="sticky bottom-5 bg-background  px-4 py-3">
+          <div className="max-w-screen-md mx-auto">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-muted rounded-xl px-4 py-2">
+              <input
+                type="text"
+                placeholder="Type your message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground text-foreground"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                disabled={loading || !activeSessionId}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleSend}
+                disabled={loading || !activeSessionId || !message.trim()}
+                className="self-end sm:self-auto"
+              >
+                <Send className="h-5 w-5" />
+              </Button>
+            </div>
 
-          {error && (
-            <p className="text-center text-sm text-red-500 mt-2">{error}</p>
-          )}
+            {error && (
+              <p className="text-center text-sm text-red-500 mt-2">{error}</p>
+            )}
+          </div>
         </div>
       </main>
     </div>
