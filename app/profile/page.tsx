@@ -1,77 +1,70 @@
+// "use client";
+
+// import { useRouter } from "next/navigation";
+// import { useState } from "react";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { Button } from "@/components/ui/button";
+// import { betterAuthClient } from "@/lib/integrations/better-auth";
+
+// export default function ProfilePage() {
+//   const router = useRouter();
+//   const { data: session } = betterAuthClient.useSession();
+//   const user = session?.user;
+
+//   return (
+//     <div className="max-w-3xl mx-auto py-10 px-4">
+//       <div className="flex items-center gap-6">
+//         <div className="relative group">
+//           <Avatar className="w-24 h-24">
+//             <AvatarImage src={user?.image || ""} />
+//             <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
+//           </Avatar>
+//           <div
+//             onClick={() => router.push("/profile/edit")}
+//             className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center text-white cursor-pointer opacity-0 group-hover:opacity-100"
+//           >
+//             {user?.image ? "Change Photo" : "Upload Photo"}
+//           </div>
+//         </div>
+
+//         <div>
+//           <h2 className="text-xl font-semibold">{user?.name}</h2>
+//           <Button onClick={() => router.push("/profile/edit")} className="mt-2">
+//             Edit Profile
+//           </Button>
+//         </div>
+//       </div>
+
+//       <div className="mt-6">
+//         {/* <p><strong>Bio:</strong> {user?.bio || "No bio added yet."}</p> */}
+//       </div>
+//     </div>
+//   );
+// }
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 
 export default function ProfilePage() {
-  const { data: user } = betterAuthClient.useSession();
-  const [name, setName] = useState(user?.user.name || "");
-  const [bio, setBio] = useState("");
-  const [image, setImage] = useState(user?.user.image || "");
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(url);
-    }
-  };
-
-  const handleSave = () => {
-    // Save logic here (e.g., send to backend)
-    console.log({ name, bio, image });
-    alert("Profile saved!");
-  };
+  const router = useRouter();
+  const { data: session } = betterAuthClient.useSession();
+  const user = session?.user;
 
   return (
-    <div className="max-w-xl mx-auto p-6 mt-8 space-y-6">
-      <h1 className="text-2xl font-bold text-center">Edit Profile</h1>
-
-      <div className="flex justify-center">
-        <label className="cursor-pointer relative group">
-          <Avatar className="h-24 w-24">
-            <AvatarImage src={image || "https://github.com/shadcn.png"} />
-            <AvatarFallback>{name.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+    <div className="max-w-2xl mx-auto py-10 px-4 text-center space-y-4">
+      <div className="flex flex-col items-center gap-4">
+        <div className="relative group">
+          <Avatar className="h-28 w-28">
+            <AvatarImage src={user?.image || ""} />
+            <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleImageUpload}
-          />
-          <div className="absolute inset-0 rounded-full bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm">
-            Change
-          </div>
-        </label>
-      </div>
-
-      <div className="space-y-4">
-        <div>
-          <label className="text-sm font-medium">Name</label>
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-          />
         </div>
-        <div>
-          <label className="text-sm font-medium">Bio</label>
-          <Textarea
-            rows={4}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            placeholder="Write something about yourself..."
-          />
-        </div>
-      </div>
-
-      <div className="text-center">
-        <Button onClick={handleSave}>Save Profile</Button>
+        <h1 className="text-xl font-bold">{user?.name || "Your Name"}</h1>
+        {/* <p className="text-gray-500">{user?.bio || "No bio yet."}</p> */}
+        <Button onClick={() => router.push("/profile/edit")}>Edit Profile</Button>
       </div>
     </div>
   );
