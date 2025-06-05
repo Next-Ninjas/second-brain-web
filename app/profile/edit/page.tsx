@@ -72,7 +72,6 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 
 export default function EditProfilePage() {
