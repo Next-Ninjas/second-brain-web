@@ -30,7 +30,7 @@ const MemoryPage = async ({
 }) => {
   const memId = (await params).memId;
 
-  const response = await fetch(`${serverUrl}/memories/${memId}`, {
+  const response = await fetch(`${serverUrl}/dashboard/memories/${memId}`, {
     method: "GET",
     credentials: "include",
     headers: await forwardableHeaders(),

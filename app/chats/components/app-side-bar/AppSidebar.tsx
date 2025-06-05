@@ -1,6 +1,4 @@
 "use client";
-import Link from "next/link";
-import { useState } from "react";
 import { BrainCircuit, Home, Plus, Search } from "lucide-react";
 
 import {
@@ -12,44 +10,38 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { SearchBar } from "@/app/dashboard/search/components/SearchBar";
+import Link from "next/link";
 
-
+// Menu items.
 const items = [
   {
     title: "Nueronote",
+    url: "/dashboard",
     icon: BrainCircuit,
     size: 40,
   },
-  {
-    title: "Home",
-    url: "/dashboard",
-    icon: Home,
-    size: 24,
-  },
+
+
   {
     title: "New chats",
     url: "/chats",
     icon: Plus,
     size: 24,
   },
+  {
+    title: "my memories",
+    url: "/dashboard/search",
+    icon: Search,
+  }
+
 ];
 
 export function AppSidebar() {
-  const [showSearchBar, setShowSearchBar] = useState(false);
-
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            {/* Conditionally show search bar */}
-            {showSearchBar && (
-              <div className="p-2">
-                <SearchBar />
-              </div>
-            )}
-
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
@@ -60,17 +52,7 @@ export function AppSidebar() {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
-
-              {/* Search chats toggle item */}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  onClick={() => setShowSearchBar((prev) => !prev)}
-                >
-                  <Search />
-                  <span>Search chats</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              ))}{" "}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

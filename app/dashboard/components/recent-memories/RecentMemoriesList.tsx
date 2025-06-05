@@ -52,7 +52,7 @@ export default function RecentMemoriesList() {
                   : memory.content}
               </span>
               <Link
-                href={`/memories/${memory.id}`}
+                href={`/dashboard/memories/${memory.id}`}
                 className="text-green-500 text-xs font-medium hover:underline"
               >
                 Read more →
