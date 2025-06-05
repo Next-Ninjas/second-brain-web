@@ -150,3 +150,43 @@
 .animate-float {
   animation: float 5s ease-in-out infinite;
 }
+
+/* 
+.dashboard {
+  min-block-size: 100vh;
+  min-block-size: 100dvh;
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  grid-template-rows:auto 1fr auto;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar main"
+    "footer footer";
+}
+
+.dashboard-header {
+  grid-area: header;
+}
+.dashboard-sidebar {
+  position: relative;
+  grid-area: sidebar;
+}
+
+.dashboard-main {
+  grid-area: main;
+}
+.dashboard-footer {
+  grid-area: footer;
+}
+
+
+.dasghoard-sidebar button {
+  position: absolute; 
+  inset: 4.5rem -0.75rem auto auto; 
+  width: 1.5rem; 
+  aspect-ratio: 1; 
+  background-color: #fff; 
+  border: transparent; 
+  border-radius: 50%; 
+  cursor: pointer; 
+} */

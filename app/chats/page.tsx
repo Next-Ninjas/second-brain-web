@@ -16,63 +16,65 @@ import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { serverUrl } from "@/lib/environment";
-
-type ChatMemory = {
-  id: string;
-  title: string;
-  text: string;
-};
-
-type ChatApiResponse = {
-  success: boolean;
-  query: string;
-  summary: string;
-  results: ChatMemory[];
-  meta?: {
-    count: number;
-    limit: number;
-    offset: number;
-  };
-  message?: string;
-};
+import { ModeToggle } from "@/components/ui/ModeToggle";
 
 const ChatPage = () => {
   const { data: user } = betterAuthClient.useSession();
   const router = useRouter();
+
   const [message, setMessage] = useState("");
   const [summary, setSummary] = useState("");
   const [animatedSummary, setAnimatedSummary] = useState("");
-  const [memories, setMemories] = useState<ChatMemory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   const handleSend = async () => {
     if (!message.trim()) return;
+
     setLoading(true);
     setSummary("");
     setAnimatedSummary("");
-    setMemories([]);
     setError("");
 
     try {
-      const res = await fetch(
-        `${serverUrl}/ai/chat?q=${encodeURIComponent(message)}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const data: ChatApiResponse = await res.json();
+      let currentSessionId = sessionId;
 
-      if (res.ok && data.success) {
-        setSummary(data.summary);
-        setMemories(data.results || []);
-      } else {
-        setError(data.message || "Something went wrong.");
+      if (!sessionId) {
+        const res = await fetch(`${serverUrl}/chats/session`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ title: "New Chat" }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success)
+          throw new Error(data.message || "Failed to create session");
+
+        currentSessionId = data.session.id;
+        setSessionId(currentSessionId);
       }
-    } catch (err) {
+
+      const res = await fetch(`${serverUrl}/chats/${currentSessionId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success)
+        throw new Error(data.message || "Failed to send message");
+
+      setSummary(data.reply);
+    } catch (err: any) {
       console.error(err);
-      setError("Failed to connect to the server.");
+      setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
       setMessage("");
@@ -96,74 +98,12 @@ const ChatPage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Sticky Header */}
-      <div className="flex-row sticky top-0 z-50 w-full border-b bg-white text-black dark:text-white dark:bg-[#121212] border-gray-200 px-6 py-1 dark:border-gray-700 flex items-center justify-end">
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="flex items-center gap-2 rounded-full"
-            >
-              <Avatar className="h-8 w-8">
-                <AvatarImage
-                  src={user?.user.image || "https://github.com/shadcn.png"}
-                  alt={user?.user.name || "User"}
-                />
-                <AvatarFallback>
-                  {user?.user.name?.charAt(0).toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden sm:inline">{user?.user.name}</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 rounded-2xl">
-                  <AvatarImage
-                    src={user?.user.image || "https://github.com/shadcn.png"}
-                    alt={user?.user.name || "User"}
-                  />
-                  <AvatarFallback>
-                    {user?.user.name?.charAt(0).toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="truncate font-medium">
-                    {user?.user.name}
-                  </span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user?.user.email}
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/profile")}>
-                <UserIcon className="mr-2 h-4 w-4" />
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => {
-                  const response = await betterAuthClient.signOut();
-                  if (response.data) router.replace("/");
-                }}
-              >
-                <LogOutIcon className="mr-2 h-4 w-4" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
+      
       {/* Chat Area */}
       <div className="flex flex-1 items-center justify-center bg-white dark:bg-[#121212] px-4 py-10">
         <div className="w-full max-w-2xl">
-          {/* Header */}
-          {/* Header */}
-          {!summary && !memories.length && !loading && (
+          {/* Intro Header */}
+          {!summary && !loading && (
             <>
               <div className="flex items-center justify-center gap-2 mb-4">
                 <BrainCircuit color="green" size={30} />
@@ -177,45 +117,24 @@ const ChatPage = () => {
             </>
           )}
 
-          {/* AI Summary + Memories */}
-          {!loading && (
-            <>
-              {animatedSummary && (
-                <div className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 rounded-lg shadow">
-                  <h2 className="font-semibold mb-2 text-lg">AI Summary</h2>
-                  <p className="text-gray-800 dark:text-gray-200 whitespace-pre-line">
-                    {animatedSummary}
-                  </p>
-                </div>
-              )}
-
-              {memories.length > 0 && (
-                <div className="space-y-4 mb-6">
-                  <h2 className="font-semibold text-lg">Relevant Memories</h2>
-                  {memories.map((m) => (
-                    <div
-                      key={m.id}
-                      className="p-4 border rounded-md dark:border-gray-700"
-                    >
-                      <h3 className="font-semibold text-base mb-1">
-                        {m.title}
-                      </h3>
-                      <p className="text-sm text-gray-700 dark:text-gray-300">
-                        {m.text}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
+          {/* AI Response */}
+          {!loading && animatedSummary && (
+            <div className="mb-6 p-4 bg-green-100 dark:bg-green-900/30 rounded-lg shadow">
+              <h2 className="font-semibold mb-2 text-lg">AI Summary</h2>
+              <p className="text-gray-800 dark:text-gray-200 whitespace-pre-line">
+                {animatedSummary}
+              </p>
+            </div>
           )}
-          {/* Loading State */}
+
+          {/* Loading */}
           {loading && (
             <p className="text-center text-sm text-muted-foreground mb-4">
               Thinking...
             </p>
           )}
-          {/* Chat Input */}
+
+          {/* Input */}
           <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-full px-4 py-2 mb-6">
             <input
               type="text"
@@ -235,7 +154,6 @@ const ChatPage = () => {
           </div>
 
           {/* Error */}
-
           {error && (
             <p className="text-center text-sm text-red-500 mb-4">{error}</p>
           )}
