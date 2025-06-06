@@ -4,7 +4,14 @@ import Link from "next/link";
 import { BrainCircuit, Github, LogOutIcon, UserIcon } from "lucide-react";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -83,6 +90,9 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => router.push("/profile")}>
                   <UserIcon className="mr-2 h-4 w-4" />
                   Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/memory-feeds")}>
+                  My Memories
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={async () => {

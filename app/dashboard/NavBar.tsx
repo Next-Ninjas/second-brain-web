@@ -9,6 +9,7 @@ import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { FaPenFancy } from "react-icons/fa6";
 
 export default function Navbar() {
   const router = useRouter();
@@ -83,6 +84,11 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => router.push("/profile")}>
                   <UserIcon className="mr-2 h-4 w-4" />
                   Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/dashboard/memory-feeds")}>
+            
+                  <FaPenFancy size={20} />
+                  My Memories
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={async () => {
