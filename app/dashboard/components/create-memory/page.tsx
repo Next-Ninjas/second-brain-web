@@ -82,7 +82,7 @@ const CreateMemory = () => {
         </span>
       </DialogTrigger>
 
-      <DialogContent className="max-w-xl w-full text-black dark:text-white">
+      <DialogContent className="w-full max-w-[90vw] sm:max-w-md md:max-w-xl text-black dark:text-white">
         <DialogHeader>
           <DialogTitle>What’s your memory?</DialogTitle>
           <DialogDescription>Share a personal memory.</DialogDescription>
@@ -93,7 +93,7 @@ const CreateMemory = () => {
             e.preventDefault();
             handleSubmit(e);
           }}
-          className="space-y-4"
+          className="space-y-4 px-2 sm:px-3 md:px-4"
         >
           <Field name="title">
             {(field) => (
@@ -119,15 +119,15 @@ const CreateMemory = () => {
           </Field>
 
           {/* Tag Input & Badge UI */}
-          <div>
+          <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Tags
             </label>
-            <div className="flex flex-wrap gap-2 mt-2 mb-2">
+            <div className="flex flex-wrap gap-2">
               {tags.map((tag, index) => (
                 <div
                   key={index}
-                  className="inline-flex items-center rounded-full bg-gray-200 dark:bg-gray-700 px-3 py-1 text-sm text-gray-800 dark:text-white"
+                  className="inline-flex items-center break-words max-w-full rounded-full bg-gray-200 dark:bg-gray-700 px-3 py-1 text-sm text-gray-800 dark:text-white"
                 >
                   {tag}
                   <button
@@ -194,6 +194,7 @@ const CreateMemory = () => {
                 disabled={
                   !canSubmit || isSubmitting || createMemoryMutation.isPending
                 }
+                className="w-full"
               >
                 {createMemoryMutation.isPending && <Spinner className="mr-2" />}
                 Create Memory

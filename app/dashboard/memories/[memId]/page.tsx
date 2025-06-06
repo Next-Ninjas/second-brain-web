@@ -59,6 +59,20 @@ const MemoryPage = async ({
               <span className="text-xs text-muted-foreground order-first sm:order-none">
                 {new Date(data.createdAt).toLocaleString()}
               </span>
+              {data.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {data.tags.map((tag, index) => (
+                    <span
+                    
+                      key={index}
+
+                      className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-full text-xs text-gray-800 dark:text-gray-200"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </CardFooter>
           </Card>
         </div>

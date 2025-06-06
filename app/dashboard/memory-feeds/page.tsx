@@ -19,6 +19,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { betterAuthClient } from "@/lib/integrations/better-auth";
+import { Separator } from "@/components/ui/separator";
 
 const FeedPage = () => {
   const { data: sessionUser } = betterAuthClient.useSession();
@@ -98,10 +99,7 @@ const FeedPage = () => {
                 className="flex items-center gap-1"
               >
                 {tag}
-                <X
-                  className="w-3 h-3 ml-1 cursor-pointer"
-                  onClick={() => toggleTag(tag)}
-                />
+               
               </Badge>
             ))}
           </div>
@@ -139,11 +137,12 @@ const FeedPage = () => {
                 })}
               </div>
 
-              {selectedTags.length > 0 && (
-                <div className="flex justify-between gap-2 mt-4">
+     
+                <div className="flex justify-between gap-2 mt-4 bottom-0 sticky z-50 bg-background p-2 border-t">
                   <Button size="sm" onClick={applyTagFilter}>
                     Apply
-                  </Button>
+                </Button>
+                {selectedTags.length > 0 && (
                   <Button
                     size="sm"
                     variant="outline"
@@ -151,8 +150,9 @@ const FeedPage = () => {
                   >
                     Clear All
                   </Button>
+                )}
                 </div>
-              )}
+        
             </ScrollArea>
           </div>
         )}
@@ -181,7 +181,7 @@ const FeedPage = () => {
           data.map((post) => (
             <Card
               key={post.id}
-              className="mb-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900"
+              className="mb-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200"
             >
               <CardHeader>
                 <h2
@@ -198,17 +198,31 @@ const FeedPage = () => {
                     : post.content}
                 </p>
               </CardContent>
+              <Separator />
               <CardFooter className="flex justify-between">
                 <span className="text-xs text-muted-foreground">
                   {new Date(post.createdAt).toLocaleString()}
                 </span>
-                <DeleteButton postId={post.id} authorId={sessionUser?.user.id || ''} />
+                {post.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+                <DeleteButton
+                  postId={post.id}
+                  authorId={sessionUser?.user.id || ""}
+                />
               </CardFooter>
             </Card>
-          ))        )}
+          ))
+        )}
 
         {/* Pagination Controls */}
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between z-50 items-center mt-4 bottom-0 sticky bg-background p-2 border-t">
           <Button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={page === 1}
@@ -216,7 +230,12 @@ const FeedPage = () => {
             Previous
           </Button>
           <span className="text-muted-foreground">Page {page}</span>
-          <Button onClick={() => setPage((prev) => prev + 1)}>Next</Button>
+          <Button
+            onClick={() => setPage((prev) => prev + 1)}
+            disabled={ data.length < limit || isPending }
+          >
+            Next
+          </Button>
         </div>
       </div>
     </div>
