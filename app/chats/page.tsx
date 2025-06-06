@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { FaPenFancy } from "react-icons/fa6";
 import {
   BrainCircuit,
   Plus,
-  Search,
   Menu,
   LogOutIcon,
   UserIcon,
@@ -416,11 +416,11 @@ export default function Page() {
           </button>
 
           <Link
-            href="/dashboard/search"
+            href="/dashboard/memory-feeds"
             className="flex items-center gap-3 p-3 rounded-md hover:bg-white/10"
             onClick={() => setMobileSidebarOpen(false)}
           >
-            <Search size={20} />
+            <FaPenFancy size={20} />
             {!collapsed && <span>My Memories</span>}
           </Link>
         </nav>
