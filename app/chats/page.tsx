@@ -381,7 +381,7 @@ export default function Page() {
           mobileSidebarOpen
             ? "translate-x-0 w-64"
             : "-translate-x-full md:translate-x-0"
-        } ${collapsed ? "md:w-16" : "md:w-64"}`}
+        } ${collapsed ? "md:w-20" : "md:w-64"}`}
       >
         <div className="flex flex-row justify-between items-center px-4 py-6">
           <div className="flex items-center gap-2">
@@ -491,8 +491,8 @@ export default function Page() {
         </button>
       </aside>
 
-      {/* Header */}
-      <header className="w-full px-4 py-2 sm:px-6 sm:py-4 md:col-start-2">
+      {/* Header - Now hidden on mobile */}
+      <header className="w-full px-4 py-2 sm:px-6 sm:py-4 md:col-start-2 hidden md:block">
         <div className="flex items-center justify-between py-2">
           <div className="text-lg font-bold">
             {activeSession ? activeSession.title || "Chats" : "Select a chat"}
@@ -664,7 +664,6 @@ export default function Page() {
                           : "bg-green-100 dark:bg-green-900/30"
                       }`}
                       style={{
-                        // maxWidth: "calc(100% - 2rem)",
                         marginLeft: msg.role === "user" ? "auto" : "0",
                         marginRight: msg.role === "user" ? "0" : "auto",
                       }}
