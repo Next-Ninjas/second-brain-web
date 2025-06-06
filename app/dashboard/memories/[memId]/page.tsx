@@ -1,4 +1,3 @@
-
 import {
   Card,
   CardContent,
@@ -8,8 +7,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { serverUrl } from "@/lib/environment";
 import { forwardableHeaders } from "@/lib/extras/headers";
-
-
 import React from "react";
 
 interface Memory {
@@ -40,7 +37,7 @@ const MemoryPage = async ({
 
   return (
     <>
-      <div className="relative">
+      <div className="relative mt-4">
         <div className="flex flex-col items-stretch gap-4 max-w-4xl mx-auto px-4 pb-24">
           <Card
             key={data.id}

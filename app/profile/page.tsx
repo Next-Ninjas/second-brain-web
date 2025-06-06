@@ -11,15 +11,11 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-
-import { betterAuthClient } from "@/lib/integrations/better-auth";
 import { EditProfileSheet } from "./EditProfile";
 import { serverUrl } from "@/lib/environment";
 import { User } from "@/lib/extras/schemas/user";
 
 const UserProfilePage = () => {
-  const { data: sessionUser } = betterAuthClient.useSession();
   const router = useRouter();
 
   const { data, error, isLoading } = useQuery({

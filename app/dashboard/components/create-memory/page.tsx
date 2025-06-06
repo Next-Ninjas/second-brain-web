@@ -49,7 +49,7 @@ const CreateMemory = () => {
       setIsOpen(false);
       toast.success("Memory created successfully.");
       tanstackQueryClient.invalidateQueries({ queryKey: ["memories"] });
-      tanstackQueryClient.invalidateQueries({ queryKey: ["recent-memories"] }); 
+      tanstackQueryClient.invalidateQueries({ queryKey: ["recent-memories"] });
     },
     onSettled: () => {
       reset();
@@ -77,9 +77,9 @@ const CreateMemory = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="text-black dark:text-white font-semibold px-6 py-3 rounded-xl">
-          Add Memory
-        </Button>
+        <span className="px-4 py-2 rounded-full border border-green-400 text-green-400 font-medium text-sm shadow-sm flex items-center gap-2 transition-all duration-200 hover:bg-green-400 hover:text-white dark:hover:text-black cursor-pointer">
+          ✍️ Thought Captures
+        </span>
       </DialogTrigger>
 
       <DialogContent className="max-w-xl w-full text-black dark:text-white">
@@ -144,13 +144,13 @@ const CreateMemory = () => {
             </div>
             <Input
               value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
+              onChange={(e) => setTagInput(e.target.value.replace(",", ""))}
               onKeyDown={(e) => {
-                if (e.key === " " && tagInput.trim()) {
+                const trimmedTag = tagInput.trim();
+                if ((e.key === "," || e.key === "Enter") && trimmedTag) {
                   e.preventDefault();
-                  const newTag = tagInput.trim();
-                  if (!tags.includes(newTag)) {
-                    setTags([...tags, newTag]);
+                  if (!tags.includes(trimmedTag)) {
+                    setTags([...tags, trimmedTag]);
                   }
                   setTagInput("");
                 } else if (
@@ -161,7 +161,14 @@ const CreateMemory = () => {
                   setTags(tags.slice(0, -1));
                 }
               }}
-              placeholder="Type and press space to add tag"
+              onBlur={() => {
+                const trimmedTag = tagInput.trim();
+                if (trimmedTag && !tags.includes(trimmedTag)) {
+                  setTags([...tags, trimmedTag]);
+                }
+                setTagInput("");
+              }}
+              placeholder="Type and press comma or Enter to add tag"
             />
           </div>
 

@@ -11,9 +11,9 @@ import {
   Send,
   Sparkles,
   X,
-  ChevronLeft, // Added for collapse icon
+  ChevronLeft,
   ChevronRight,
-  BotMessageSquare, // Added for expand icon
+  BotMessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "@/components/ui/ModeToggle";
@@ -33,7 +33,6 @@ import { useRouter } from "next/navigation";
 import { serverUrl } from "@/lib/environment";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
-
 
 type ChatSession = {
   id: string;
@@ -85,15 +84,25 @@ export default function Page() {
     index: number;
   } | null>(null);
 
+  // Responsive sidebar state
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setMobileSidebarOpen(false);
-      }
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  // Close mobile sidebar when resizing to desktop
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileSidebarOpen(false);
+    }
+  }, [isMobile]);
 
   // Fetch sessions on mount
   useEffect(() => {
@@ -149,8 +158,6 @@ export default function Page() {
     scrollToBottom();
   }, [sessionMessages, streamingMessage]);
 
- 
-
   // Handle streaming effect
   useEffect(() => {
     if (streamingMessage) {
@@ -171,7 +178,6 @@ export default function Page() {
             clearInterval(streamingRef.current as NodeJS.Timeout);
             streamingRef.current = null;
 
-            // ✅ Push final assistant message to both query cache and state
             const completedMessage = {
               id: prev.id,
               content: prev.fullContent,
@@ -179,13 +185,11 @@ export default function Page() {
               createdAt: new Date(),
             };
 
-            // Push to local state immediately
             setSessionMessages((old) => {
               const exists = old.find((m) => m.id === completedMessage.id);
               return exists ? old : [...old, completedMessage];
             });
 
-            // Push to query cache
             queryClient.setQueryData<ChatMessage[]>(
               ["sessionMessages", activeSessionId],
               (oldMessages) => {
@@ -198,9 +202,8 @@ export default function Page() {
                   : [...oldMessages, completedMessage];
               }
             );
-            
 
-            return null; // Clear streamingMessage
+            return null;
           }
         });
       }, 20);
@@ -213,7 +216,6 @@ export default function Page() {
       }
     };
   }, [streamingMessage, queryClient, activeSessionId]);
-  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -267,13 +269,12 @@ export default function Page() {
     }
     return [];
   };
-  
+
   const handleSend = async () => {
     if (!message.trim() || !activeSessionId) return;
     setLoading(true);
     setError("");
 
-    // Optimistically add user message
     const tempId = `temp-${Date.now()}`;
     const userMessage = {
       id: tempId,
@@ -298,10 +299,8 @@ export default function Page() {
         throw new Error(data.message || "Failed to send message");
       }
 
-      // Set relevant memories from response
       setRelevantMemories(data.memoryRecords || []);
 
-      // Start streaming effect for assistant reply
       const reply =
         typeof data.reply === "string"
           ? data.reply
@@ -314,7 +313,6 @@ export default function Page() {
         index: 0,
       });
 
-      // Refresh sessions list
       await fetchSessions();
     } catch (err) {
       console.error(err);
@@ -357,29 +355,42 @@ export default function Page() {
       <div className="md:hidden p-4 flex justify-between items-center border-b">
         <div className="flex items-center gap-2">
           <BrainCircuit size={24} />
-          <span className="font-extrabold">Nuronote</span>
+          <span className="font-extrabold cursor-pointer">Nuronote</span>
         </div>
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setMobileSidebarOpen(true)}
+          className="md:hidden"
         >
           <Menu size={24} />
         </Button>
       </div>
 
+      {/* Sidebar - Mobile Overlay */}
+      {isMobile && mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 bg-[#212121] text-white transition-all duration-300 flex flex-col md:row-span-2 ${
-          mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 ${collapsed ? "w-16" : "w-64"}`}
+        className={`fixed inset-y-0 left-0 z-50 bg-[#212121] text-white transition-all duration-300 flex flex-col md:static md:z-auto md:row-span-2 ${
+          mobileSidebarOpen
+            ? "translate-x-0 w-64"
+            : "-translate-x-full md:translate-x-0"
+        } ${collapsed ? "md:w-16" : "md:w-64"}`}
       >
         <div className="flex flex-row justify-between items-center px-4 py-6">
           <div className="flex items-center gap-2">
-            <Link href={"/dashboard"}>
+            <Link href={"/dashboard"} className="flex items-center gap-2">
               <BrainCircuit size={32} />
+              {!collapsed && (
+                <span className="font-extrabold cursor-pointer">Nuronote</span>
+              )}
             </Link>
-            {!collapsed && <span className="font-extrabold">Nuronote</span>}
           </div>
 
           <button
@@ -394,7 +405,7 @@ export default function Page() {
           <button
             onClick={handleNewChat}
             disabled={activeSessionId !== null && sessionMessages.length === 0}
-            className={`flex items-center gap-3 p-2 rounded-md hover:bg-white/10 w-full text-left ${
+            className={`flex items-center gap-3 p-3 rounded-md hover:bg-white/10 w-full text-left ${
               activeSessionId !== null && sessionMessages.length === 0
                 ? "opacity-50 cursor-not-allowed"
                 : ""
@@ -406,7 +417,7 @@ export default function Page() {
 
           <Link
             href="/dashboard/search"
-            className="flex items-center gap-3 p-2 rounded-md hover:bg-white/10"
+            className="flex items-center gap-3 p-3 rounded-md hover:bg-white/10"
             onClick={() => setMobileSidebarOpen(false)}
           >
             <Search size={20} />
@@ -430,23 +441,23 @@ export default function Page() {
                     setActiveSessionId(session.id);
                     setMobileSidebarOpen(false);
                   }}
-                  className={`block p-2 rounded-md hover:bg-white/10 w-full text-left truncate ${
+                  className={`flex items-center p-3 rounded-md hover:bg-white/10 w-full text-left ${
                     activeSessionId === session.id ? "bg-white/20" : ""
                   }`}
                 >
-                  <div className="truncate">
+                  <div className="flex-1 truncate">
                     {!collapsed ? (
                       <>
                         <div className="font-medium truncate">
-                          {session.title || " Chats"}
+                          {session.title || "Chat"}
                         </div>
                         {session.messages.length > 0 && (
-                          <div className="text-[15px] text-gray-400 truncate">
+                          <div className="text-sm text-gray-400 truncate">
                             {session.messages[
                               session.messages.length - 1
-                            ].content.slice(0, 20)}
+                            ].content.slice(0, 30)}
                             {session.messages[session.messages.length - 1]
-                              .content.length > 20 && "..."}
+                              .content.length > 30 && "..."}
                           </div>
                         )}
                       </>
@@ -457,11 +468,14 @@ export default function Page() {
                 </button>
                 {!collapsed && (
                   <button
-                    onClick={() => deleteSession(session.id)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteSession(session.id);
+                    }}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-opacity p-1"
                     title="Delete session"
                   >
-                    ×
+                    <X size={16} />
                   </button>
                 )}
               </li>
@@ -471,24 +485,24 @@ export default function Page() {
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className=" md:block absolute top-20 -right-3 w-6 h-6 bg-white text-black rounded-full flex items-center justify-center shadow-md z-50"
+          className="hidden md:block absolute top-20 -right-3 w-6 h-6 bg-white text-black rounded-full  items-center justify-center shadow-md z-50"
         >
           {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
       </aside>
 
       {/* Header */}
-      <header className="w-full px-4 py-2 sm:px-6 sm:py-4 md:col-start-2 ">
+      <header className="w-full px-4 py-2 sm:px-6 sm:py-4 md:col-start-2">
         <div className="flex items-center justify-between py-2">
           <div className="text-lg font-bold">
-            {activeSession ? "Chats" : "Select a chat"}
+            {activeSession ? activeSession.title || "Chats" : "Select a chat"}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="flex items-center gap-2 rounded-full"
+                  className="flex items-center gap-2 rounded-full p-2 sm:px-3"
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarImage
@@ -553,7 +567,7 @@ export default function Page() {
 
       {/* Main Content */}
       <main className="w-full flex flex-col min-h-0 md:col-start-2 md:row-start-2">
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-24 sm:pb-4">
           {!activeSessionId && (
             <div className="h-full flex flex-col items-center justify-center">
               <div className="flex items-center justify-center gap-2 mb-4">
@@ -649,6 +663,11 @@ export default function Page() {
                           ? "bg-blue-100 dark:bg-blue-900/30 ml-auto"
                           : "bg-green-100 dark:bg-green-900/30"
                       }`}
+                      style={{
+                        // maxWidth: "calc(100% - 2rem)",
+                        marginLeft: msg.role === "user" ? "auto" : "0",
+                        marginRight: msg.role === "user" ? "0" : "auto",
+                      }}
                     >
                       <div className="font-semibold mb-1">
                         {msg.role === "user" ? "You" : "NeuroNote"}
@@ -688,8 +707,8 @@ export default function Page() {
           )}
         </div>
 
-        {/* Fixed Input Bar */}
-        <div className="sticky bottom-5 bg-background  px-4 py-3">
+        {/* Fixed Input Bar - Mobile optimized */}
+        <div className="fixed bottom-0 left-0 right-0 bg-background border-t md:static md:border-t-0 px-4 py-3 md:sticky md:bottom-5">
           <div className="max-w-screen-md mx-auto">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-muted rounded-xl px-4 py-2">
               <input
@@ -697,7 +716,7 @@ export default function Page() {
                 placeholder="Type your message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground text-foreground"
+                className="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground text-foreground py-2 sm:py-0"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
