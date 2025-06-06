@@ -10,7 +10,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import DeleteButton from "../delete-memory/DeleteButton";
+import DeleteButton from "./components/DeleteButton";
 import { serverUrl } from "@/lib/environment";
 import { feedSchema, type Memory } from "@/lib/extras/schemas/memorySchema";
 import { Input } from "@/components/ui/input";
@@ -18,8 +18,10 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
+import { betterAuthClient } from "@/lib/integrations/better-auth";
 
 const FeedPage = () => {
+  const { data: sessionUser } = betterAuthClient.useSession();
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -200,11 +202,10 @@ const FeedPage = () => {
                 <span className="text-xs text-muted-foreground">
                   {new Date(post.createdAt).toLocaleString()}
                 </span>
-                <DeleteButton postId={post.id} authorId={post.userId || ""} />
+                <DeleteButton postId={post.id} authorId={sessionUser?.user.id || ''} />
               </CardFooter>
             </Card>
-          ))
-        )}
+          ))        )}
 
         {/* Pagination Controls */}
         <div className="flex justify-between items-center mt-4">

@@ -34,7 +34,8 @@ export  default function DeleteButton({
         toast.success("Post deleted successfully");
         // Invalidate the feeds query to trigger refresh
         await tanstackQueryClient.invalidateQueries({
-          queryKey: ["memory-feeds"],
+          queryKey: ["feeds"],
+          exact: false,
         });
       } catch (error) {
         console.error("Error deleting post:", error);
