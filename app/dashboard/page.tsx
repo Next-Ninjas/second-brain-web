@@ -4,6 +4,8 @@ import FeatureCards from "./components/feature-card/FeatureCards";
 import CreateMemory from "./components/create-memory/page";
 import Link from "next/link";
 import RecentMemoriesList from "./components/recent-memories/RecentMemoriesList";
+import Footer from "./footer";
+
 
 const cards = [
   {
@@ -96,6 +98,8 @@ export default function HeroSection() {
       </section>
 
       {/* Gradient Hero Headline Section */}
+      <Footer />
+
     </div>
   );
 }
