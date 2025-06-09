@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, JSX } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { Loader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -234,7 +234,7 @@ const ContactPage: React.FC = () => {
                 </a>
             </p>
 
-            <footer className="mt-8 text-sm text-muted-foreground text-center text-gray-500 dark:text-gray-400">
+            <footer className="mt-8 text-sm text-muted-foreground text-center  dark:text-gray-400">
                 Made with ❤️ by the NeuroNote Team
             </footer>
            
