@@ -35,25 +35,25 @@ export default function Footer() {
           </div>
 
           {/* Resources */}
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <h4 className="font-bold mb-2">Company</h4>
             <Link href="#">Blog</Link>
             <Link href="/about">About</Link>
             <Link href="/dashboard/contact">Contact</Link>
 
             
-          </div>
+          </div> */}
 
           {/* Company */}
           <div className="flex flex-col gap-2">
             <h4 className="font-bold mb-2">Privacy</h4>
             
             <Link href="/sign-up/terms">Terms</Link>
-            <Link href="/sign-up/privacy">Privacy</Link>
+            <Link className="cursor-pointer" href="/sign-up/privacy">Privacy</Link>
           </div>
 
           {/* Follow Us */}
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <h4 className="font-bold mb-2">Follow Us</h4>
             <div className="flex gap-4 text-xl">
               <Link
@@ -73,7 +73,7 @@ export default function Footer() {
                 <FaLinkedin />
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>
