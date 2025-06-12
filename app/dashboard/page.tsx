@@ -35,11 +35,10 @@ const cards = [
 
 export default function HeroSection() {
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-screen bg-background text-foreground relative">
+      {/* Glowing background light */}
+      {/* <div className="absolute top-0 left-1/2 w-96 h-96 bg-green-400 opacity-10 blur-3xl rounded-full transform -translate-x-1/2 group-hover:scale-110 transition-transform duration-1000 pointer-events-none"></div> */}
       <section className="w-full py-20 px-4 text-center bg-background text-foreground relative overflow-hidden group">
-        {/* Glowing background light */}
-        <div className="absolute top-0 left-1/2 w-96 h-96 bg-green-400 opacity-10 blur-3xl rounded-full transform -translate-x-1/2 group-hover:scale-110 transition-transform duration-1000 pointer-events-none"></div>
-
         <h2 className="text-4xl sm:text-5xl font-bold leading-tight transition-all duration-300 group-hover:tracking-wide">
           <span className="text-black dark:text-white">
             Power Your Thoughts

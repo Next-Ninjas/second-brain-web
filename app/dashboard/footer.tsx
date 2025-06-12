@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { BrainCircuit } from "lucide-react";
-import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
 
 
 export default function Footer() {

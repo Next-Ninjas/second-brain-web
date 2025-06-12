@@ -61,6 +61,7 @@ type Memory = {
 };
 
 export default function Page() {
+
   const [collapsed, setCollapsed] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -299,7 +300,7 @@ export default function Page() {
         throw new Error(data.message || "Failed to send message");
       }
 
-      setRelevantMemories(data.memoryRecords || []);
+      setRelevantMemories(data.memoryRecords || []); 
 
       const reply =
         typeof data.reply === "string"
@@ -627,6 +628,9 @@ export default function Page() {
                           <div
                             key={memory.id}
                             className="p-3 bg-white dark:bg-gray-800 rounded border"
+                            onClick={() =>
+                              router.push(`/dashboard/memories/${memory.id}`)
+                            }
                           >
                             <div className="font-medium">
                               {memory.title || "Untitled Memory"}

@@ -13,7 +13,8 @@ type FeatureCardsProps = {
 
 export default function FeatureCards({ cards }: FeatureCardsProps) {
   return (
-    <section className=" py-16 px-4 bg-background text-foreground">
+    <section className=" py-16 px-4 bg-background text-foreground ">
+      
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (
           <div
