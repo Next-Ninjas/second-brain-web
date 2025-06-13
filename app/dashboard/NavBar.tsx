@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { FaPenFancy } from "react-icons/fa6";
+import { RiChatSmile2Line } from "react-icons/ri";
+
 
 export default function Navbar() {
   const router = useRouter();
@@ -85,10 +87,15 @@ export default function Navbar() {
                   <UserIcon className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/dashboard/memory-feeds")}>
-            
+                <DropdownMenuItem
+                  onClick={() => router.push("/dashboard/memory-feeds")}
+                >
                   <FaPenFancy size={20} />
                   My Memories
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/chats")}>
+                  <RiChatSmile2Line size={20}/>
+                  Chats
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={async () => {

@@ -19,7 +19,7 @@ export default function FeatureCards({ cards }: FeatureCardsProps) {
         {cards.map((card, index) => (
           <div
             key={index}
-            className="bg-gray-100 dark:bg-gray-900 rounded-xl p-6 shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-2 hover:scale-[1.02] border border-transparent hover:border-green-400"
+            className="bg-gray-100 dark:bg-green-950 rounded-xl p-6 shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-2 hover:scale-[1.02] border border-transparent hover:border-green-400"
           >
             <div className="mb-4 text-4xl">{card.logo}</div>
             <h3 className="font-bold text-lg mb-2">{card.heading}</h3>
