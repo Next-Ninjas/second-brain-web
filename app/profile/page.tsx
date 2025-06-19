@@ -38,7 +38,7 @@ const UserProfilePage = () => {
       const json = await response.json();
 
       try {
-        const result = User.parse(json.user); // ✅ access .user before validation
+        const result = User.parse(json.user); 
         return result;
       } catch (validationError) {
         console.error("Validation error:", validationError);
