@@ -57,7 +57,7 @@ export const SignUpCard = () => {
     <Card className="w-md">
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
-        <CardDescription>Enjoy Second Brain at its best!</CardDescription>
+        <CardDescription>Enjoy Neuro note at its best!</CardDescription>
       </CardHeader>
       <Separator />
       <CardContent>
